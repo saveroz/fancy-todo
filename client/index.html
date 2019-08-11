@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id"
+        content="935545067286-bmngmqmdoqhmi1pfvs2i6frlvtfgulan.apps.googleusercontent.com">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script> -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+
+    <title>Fancy To Do</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" id="mainNav">
+        <div class="container">
+            <a class="navbar-brand" href="#">Fancy Todo</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#" id="click_home">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="click_register">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="click_login">Login</a>
+                    </li>
+                    <li class="=" nav-item>
+                        <a class="nav-link " href="#" id="signout" onclick="signOut();">SignOut</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="click_todo">Todo</a>
+                    </li>
+        
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <center>
+        <div class="signUpForm">
+            <h2>Register Now!</h2>
+            <form id='signUpForm'>
+                <div class="form-group">
+                    <label for="exampleInputEmail1"></label>
+                    <input id="username" type="text" class="form-control" aria-describedby="emailHelp"
+                        placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1"></label>
+                    <input id="email" type="email" class="form-control" aria-describedby="emailHelp"
+                        placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1"></label>
+                    <input id="password" type="password" class="form-control" placeholder="Password">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </center>
+
+    <center>
+        <div class="signInForm">
+            <h2>Login</h2>
+            <p>with</p>
+            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+            <br>
+            <p>or</p>
+
+            <form id='signInForm'>
+                <div class="form-group">
+                    <label for="exampleInputEmail1"></label>
+                    <input id="email2" type="email" class="form-control" aria-describedby="emailHelp"
+                        placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1"></label>
+                    <input id="password2" type="password" class="form-control" placeholder="Password">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </center>
+
+
+
+    <div class="todo">
+
+        <button id = "todoButtonCreate"class="btn btn-primary">Create Todo</button>
+        <button id="editTodo"  class="btn btn-primary" style="color:white">edit</button>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">No</th>
+                    <th scope="col">name</th>
+                    <th scope="col">description</th>
+                    <th scope="col">duedate</th>
+                    <th scope="col">status</th>
+                    <th scope="col">option</th>
+                </tr>
+            </thead>
+            <tbody id="alltask">
+
+            </tbody>
+        </table>
+    </div>
+
+    <center>
+            <div class="createTodo">
+                <h2>Create Your Todo</h2>
+                <form id='createTodoForm'>
+                    <div class="form-group">
+                        <label for="todo-name"></label>
+                        <input id="todo-name" type="text" class="form-control" aria-describedby="name"
+                            placeholder="Enter your todo name">
+                    </div>
+                    <div class="form-group">
+                        <label for="todo description"></label>
+                        <input id="todo-description" type="text" class="form-control" placeholder="description">
+                    </div>
+                    <div class="form-group">
+                            <label for="todo duedate"></label>
+                            <input id="todo-duedate" type="date" class="form-control" placeholder="duedate">
+                    </div>
+    
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </center>
+
+
+        <center>
+                <div class="edit">
+                    <h2>Edit Your Todo</h2>
+                    <form id='editTodoForm'>
+                        <div class="form-group">
+                            <label for="todo-name"></label>
+                            <input id="todo-name" type="text" class="form-control" aria-describedby="name"
+                                placeholder="Enter your todo name">
+                        </div>
+                        <div class="form-group">
+                            <label for="todo description"></label>
+                            <input id="todo-description" type="text" class="form-control" placeholder="description">
+                        </div>
+                        <div class="form-group">
+                                <label for="todo duedate"></label>
+                                <input id="todo-duedate" type="date" class="form-control" placeholder="duedate">
+                        </div>
+        
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </center>
+
+ 
+
+    <br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br><br><br><br>
+    <br>
+
+    <script src="./js/LogIn.js"></script>
+    <script src="./js/index.js"></script>
+
+</body>
+
+</html>
