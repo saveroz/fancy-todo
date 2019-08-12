@@ -48,6 +48,7 @@ $(document).ready(function () {
                 // console.log(data)
                 $('.signInForm').hide()
                 $('#click_todo').show()
+                $('#click_todo').show()
                 swal("Success!", 'You have successfully login', "success");
 
             })
@@ -129,7 +130,7 @@ $(document).ready(function () {
     })
 
     $('#editTodo').click(function (){
-        $('.task').hide()
+        $('.todo').hide()
         $('.edit').show()
     })
 

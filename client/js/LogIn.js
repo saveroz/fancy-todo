@@ -19,6 +19,7 @@ function signOut() {
     auth2.signOut()
     .then(function () {
         $('#signout').hide()
+        $('#click_todo').hide()
         localStorage.removeItem('token')
         console.log('User signed out.');
     })
