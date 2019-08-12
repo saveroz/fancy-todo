@@ -61,18 +61,27 @@ $(document).ready(function () {
         $('#homepage_text').show()
         $('.signUpForm').hide()
         $('.signInForm').hide()
+        $('.createTodo').hide()
+    $('.todo').hide()
+    
     })
 
     $('#click_register').click(function () {
         $('#homepage_text').hide()
         $('.signUpForm').show()
         $('.signInForm').hide()
+        $('.createTodo').hide()
+    $('.todo').hide()
+    
     })
 
     $('#click_login').click(function () {
         $('#homepage_text').hide()
         $('.signUpForm').hide()
         $('.signInForm').show()
+        $('.createTodo').hide()
+    $('.todo').hide()
+    
     })
 
     $('#click_todo').click(function () {
@@ -83,6 +92,8 @@ $(document).ready(function () {
         let token = localStorage.getItem('token')
 
     $('#todoButtonCreate').click(function(){
+        $('.signUpForm').hide()
+        $('.signInForm').hide()
         $('.createTodo').show()
         $('.todo').hide()
     })
