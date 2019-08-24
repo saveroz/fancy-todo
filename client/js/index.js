@@ -80,7 +80,7 @@ function login() {
         password
     })
         .then(function ({ data }) {
-            console.log(data)
+            // console.log(data)
             localStorage.setItem('token', data)
             // console.log(data)
             // getAlltodo()
@@ -168,7 +168,7 @@ function deleteTodo(todoId) {
                     .done(result => {
                         swal("Success!", 'You have successfully  delete Task', "success");
                         getAlltodo()
-                        console.log(result)
+                        // console.log(result)
                     })
                     .fail(err => {
                         console.log(err)
@@ -280,7 +280,6 @@ function editTodo(todoId) {
 
     let cuy = todoId
     console.log(cuy)
-    event.preventDefault();
     let id = todoId
     let name = $('#inputTitleUpdate').val()
     let description = $('#inputDescriptionUpdate').val()
@@ -299,7 +298,7 @@ function editTodo(todoId) {
         headers: { token }
     })
         .done(result => {
-            console.log(result)
+            // console.log(result)
             swal("Success!", 'You have successfully edited Task', "success");
             getAlltodo()
 
@@ -314,7 +313,7 @@ function signUp() {
     let username = $('#username').val()
     let email = $('#email').val()
     let password = $('#password').val()
-
+    console.log('masuk ke signup')
     event.preventDefault();
     axios.post('http://localhost:3000/users/register', {
         username,
@@ -413,8 +412,8 @@ function randomPoetry(){
         $('#PoetryBox').append(template)
 
         
-        console.log(poemTitle)
-        console.log(poemContent)
+        // console.log(poemTitle)
+        // console.log(poemContent)
     })
     .catch(err=>{
         console.log("error")

@@ -53,7 +53,7 @@
     </nav>
 
     <center>
-        <div class="signUpForm">
+        <div class="signUpForm" onsubmit="signUp()">
             <h2>Register Now!</h2>
             <form id='signUpForm'>
                 <div class="form-group">
@@ -84,7 +84,7 @@
             <br>
             <p>or</p>
 
-            <form id='signInForm'>
+            <form id='signInForm' onsubmit="login()">
                 <div class="form-group">
                     <label for="exampleInputEmail1"></label>
                     <input id="email2" type="email" class="form-control" aria-describedby="emailHelp"
@@ -95,7 +95,7 @@
                     <input id="password2" type="password" class="form-control" placeholder="Password">
                 </div>
 
-                <button type="submit" onclick="login()" class="btn btn-primary">Submit</button>
+                <button type="submit"  class="btn btn-primary">Submit</button>
             </form>
         </div>
     </center>
