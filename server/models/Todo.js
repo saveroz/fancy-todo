@@ -5,7 +5,7 @@ const Schema = mongoose.Schema
 const TodoSchema = new Schema({
     name : String,
     description : String,
-    status : String,
+    status : Boolean,
     duedate: Date,
     UserId : {
         type : Schema.Types.ObjectId,
@@ -16,7 +16,7 @@ const TodoSchema = new Schema({
     versionKey :false
 })
 TodoSchema.pre('save', function(next){
-    let status = "uncompleted"
+    let status = false
     this.status = status
     next()
 })
