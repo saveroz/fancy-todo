@@ -8,7 +8,7 @@ const mongoose = require('mongoose')
 const port = process.env.PORT
 const indexRoutes = require('./routes/indexRoutes')
 const errorHandler = require('./middleware/errorHandler')
-const db_url = process.env.DB_URL
+const db_url = process.env.DB_URL_ATLAS
 
 app.use(cors())
 app.use(express.urlencoded({extended:false})) 
