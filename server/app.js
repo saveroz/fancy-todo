@@ -15,7 +15,13 @@ app.use(express.urlencoded({extended:false}))
 app.use(express.json())
 
 mongoose.connect(db_url, {useNewUrlParser:true})
-
+.
+then(function(){
+    console.log('db connected')
+})
+.catch(function () {
+    console.log('fail to connect')
+})
 
 
 app.use('/', indexRoutes)
@@ -23,7 +29,7 @@ app.use('/', indexRoutes)
 app.use(errorHandler)
 
 app.listen(port, ()=>{
-    console.log("listening to port 3000")
+    console.log(`listening to port ${port}`)
 })
 
 
