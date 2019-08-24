@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
@@ -11,17 +12,10 @@
     <link rel="stylesheet" href="./css/index.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script> -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-        crossorigin="anonymous"></script>
 
     <title>Fancy To Do</title>
 </head>
@@ -37,9 +31,9 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
+                    <!-- <li class="nav-item active">
                         <a class="nav-link" href="#" id="click_home">Home <span class="sr-only">(current)</span></a>
-                    </li>
+                    </li> -->
                     <li class="nav-item">
                         <a class="nav-link" href="#" id="click_register">Register</a>
                     </li>
@@ -49,10 +43,10 @@
                     <li class="=" nav-item>
                         <a class="nav-link " href="#" id="signout" onclick="signOut();">SignOut</a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link" href="#" id="click_todo">Todo</a>
-                    </li>
-        
+                    </li> -->
+
                 </ul>
             </div>
         </div>
@@ -101,17 +95,24 @@
                     <input id="password2" type="password" class="form-control" placeholder="Password">
                 </div>
 
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" onclick="login()" class="btn btn-primary">Submit</button>
             </form>
         </div>
     </center>
 
 
 
-    <div class="todo">
 
-        <button id = "todoButtonCreate"class="btn btn-primary">Create Todo</button>
-        <button id="editTodo"  class="btn btn-primary" style="color:white">edit</button>
+
+    <div class="col text-center mt-4">
+        <button id="todoButtonCreate" data-toggle="modal" class="btn btn-primary" data-target="#ModalCreate">Create
+            Todo</button>
+    </div>
+
+    <div id="todo" class="todo container">
+
+
+        <h2>Task List</h2>
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -124,68 +125,86 @@
                 </tr>
             </thead>
             <tbody id="alltask">
-
             </tbody>
         </table>
     </div>
 
-    <center>
-            <div class="createTodo">
-                <h2>Create Your Todo</h2>
-                <form id='createTodoForm'>
-                    <div class="form-group">
-                        <label for="todo-name"></label>
-                        <input id="todo-name" type="text" class="form-control" aria-describedby="name"
-                            placeholder="Enter your todo name">
-                    </div>
-                    <div class="form-group">
-                        <label for="todo description"></label>
-                        <input id="todo-description" type="text" class="form-control" placeholder="description">
-                    </div>
-                    <div class="form-group">
-                            <label for="todo duedate"></label>
-                            <input id="todo-duedate" type="date" class="form-control" placeholder="duedate">
-                    </div>
-    
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
-        </center>
 
 
-        <center>
-                <div class="edit">
-                    <h2>Edit Your Todo</h2>
-                    <form id='editTodoForm'>
+    <!-- Modal Form untuk create todo -->
+    <!-- <center> -->
+    <div onsubmit="createTodo()" class="modal fade" id="ModalCreate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Todo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div id="createTodoModalForm" class="modal-body">
+                    <form id="createTodoForm"  >
                         <div class="form-group">
-                            <label for="todo-name"></label>
-                            <input id="todo-name" type="text" class="form-control" aria-describedby="name"
-                                placeholder="Enter your todo name">
+                            <label>Title</label>
+                            <input type="text" class="form-control" id="inputTitleCreate" placeholder="Title" required="true">
                         </div>
                         <div class="form-group">
-                            <label for="todo description"></label>
-                            <input id="todo-description" type="text" class="form-control" placeholder="description">
+                            <label>Description</label>
+                            <textarea class="form-control" id="inputDescriptionCreate" rows="3"
+                               required="true" placeholder="description"></textarea>
                         </div>
                         <div class="form-group">
-                                <label for="todo duedate"></label>
-                                <input id="todo-duedate" type="date" class="form-control" placeholder="duedate">
+                            <label>Due Date</label>
+                            <input type="date" class="form-control" id="inputDueDateCreate" required="true">
                         </div>
-        
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" 
+                                >Submit!</button>
+                        </div>
                     </form>
                 </div>
-            </center>
+            </div>
+        </div>
+    </div>
 
- 
+    <!-- --- = ============ =---- -->
+
+
+    <!-- ---Modal Form Untuk Edit---- -->
+
+    <div class="modal fade" id="ModalEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Todo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div id="updateTodoModalForm" class="modal-body">
+                    <!-- Insert update form via index.js -->
+                </div>
+            </div>
+        </div>
+    </div>
 
     <br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br><br>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
-    <br>
 
-    <script src="./js/LogIn.js"></script>
+    <!-- <script src="./js/LogIn.js"></script> -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+        integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+        integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
     <script src="./js/index.js"></script>
+
+
 
 </body>
 

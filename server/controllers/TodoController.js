@@ -28,10 +28,16 @@ class TodoController{
 
     static create(req, res, next){
 
-        
-        let UserId = req.decode.id
         const {name, description, duedate, status} = req.body
-       
+
+        if (!name || !description || !duedate){
+            console.log("masuk ke error")
+            throw new Error("incomplete data")
+        }
+
+        let UserId = req.decode.id
+        
+       console.log("aneh")
         Todo.create({name, description, duedate, status, UserId})
         .then(success=>{
             res.status(201).json(success)

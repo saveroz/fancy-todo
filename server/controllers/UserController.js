@@ -1,13 +1,11 @@
 require("dotenv").config();
 const User = require('../models/User');
 const { OAuth2Client } = require('google-auth-library');
-const Secret="IronThrone"
-const GOOGLE_CLIENT_ID="935545067286-bmngmqmdoqhmi1pfvs2i6frlvtfgulan.apps.googleusercontent.com"
+const Secret=process.env.SECRET
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
 const client = new OAuth2Client(GOOGLE_CLIENT_ID);
 const jwt = require('jsonwebtoken')
 const {checkPassword} = require('../helpers/encryptPass')
-// const {generateToken} = require('../helpers/Token')
-
 
 class UserController{
 
@@ -15,7 +13,12 @@ class UserController{
     static create(req, res, next){
 
         
+        
         const {username ,email, password} = req.body
+        
+
+
+        // console.log("tetap berhasil")
         console.log(username)
         
         User.create({username, email, password})
