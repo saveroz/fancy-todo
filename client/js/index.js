@@ -1,4 +1,6 @@
 $(document).ready(function () {
+    $('.signUpForm').show()
+    $('.signInForm').hide()
 
     if (localStorage.getItem('token')) {
         isLoggedIn(true)
@@ -7,15 +9,12 @@ $(document).ready(function () {
     else {
         isLoggedIn(false)
     }
+    
+    
+    
 
-    // $('#click_home').click(function () {
-    //     // $('#homepage_text').show()
-    //     $('.signUpForm').hide()
-    //     $('.signInForm').hide()
-    //     $('.createTodo').hide()
-    //     $('#todo').hide()
 
-    // })
+
 
     $('#click_register').click(function () {
         // $('#homepage_text').hide()
@@ -33,18 +32,11 @@ $(document).ready(function () {
         // $('.todo').hide()
     })
 
-    // $('#todoButtonCreate').click(function () {
-    //     $('.signUpForm').hide()
-    //     $('.signInForm').hide()
-    //     $('.createTodo').show()
-    //     $('.todo').hide()
-    // })
+
     $('#click_todo').click(function () {
         $('.todo').show()
     })
-    // $('.editButton').click(function(){
-    //     $('.edit').show()
-    // })
+
 
 });
 
@@ -54,13 +46,16 @@ function isLoggedIn(condition) {
 
         $('#click_todo').show()
         $('#signout').show()
-        $('.signInForm').hide()
+        $('#PoetryBox').show()
         $('#click_register').hide()
         $('#click_login').hide()
         $('#todo').show()
         $('#todoButtonCreate').show()
+        $('.signUpForm').hide()
+        $('.signInForm').hide()
 
         getAlltodo()
+        randomPoetry()
 
     }
     else {
@@ -68,6 +63,8 @@ function isLoggedIn(condition) {
         $('#todo').hide()
         $('#todoButtonCreate').hide()
         $('#click_todo').hide()
+        $('.signUpForm').show()
+        $('#PoetryBox').hide()
     }
 
 }
@@ -91,9 +88,14 @@ function login() {
             // $('#click_todo').show()
             // $('#signout').show()
             // $('.signInForm').hide()
-            // $('#click_register').hide()
-            // $('#click_login').hide()
+            $('#click_register').hide()
+            $('#click_login').hide()
+            $('.signUpForm').hide()
+            $('.signInForm').hide()
+            $('#signout').show()
+            $('#PoetryBox').show()
             getAlltodo()
+            randomPoetry()
             swal("Success!", 'You have successfully login', "success");
             $('#todoButtonCreate').show()
 
@@ -134,7 +136,7 @@ function createTodo() {
         })
         .fail(err => {
             let errMessage = (err.responseJSON.message)
-            swal("Error!", errMessage , "error")
+            swal("Error!", errMessage, "error")
         });
 }
 
@@ -196,17 +198,30 @@ function getAlltodo() {
     })
         .done(alltodo => {
             $('#alltask').empty()
+            $('.signUpForm').hide()
             let num = 1
             for (let todo of alltodo) {
                 let objtodo = JSON.stringify(todo)
-                let template = ` <tr>
-            <td>${num}</td>
-            <td>${todo.name}</td>
-            <td>${todo.description}</td>
-            <td>${todo.duedate.slice(0, 10)}</td>
-            <td>${todo.status}</td>
-            <td><button onclick='editForm(${objtodo})' data-toggle="modal" data-target="#ModalEdit" class="editButton btn btn-primary" style="color:white">edit</button> || <button id="delete" onclick="deleteTodo('${todo._id}')" class="btn btn-primary"  style="color:white">delete</button></td>
-            </tr>`
+                let status ="" 
+                status = todo.status===true ?status="completed" : status="uncompleted"
+                let color= todo.status===true? "text-white bg-primary": "text-white bg-danger"
+                let cardclass = `card w-100 ${color}`
+                let template =
+
+                    `<div class="col-4 d-flex align-items-stretch mb-4">
+                <div class="${cardclass}">
+                  <div class="card-body">
+                    <h5 class="card-title">${todo.name}</h5>
+                    <p class="card-text">${todo.description}</p>
+                    <p class="card-text">${new Date(todo.duedate).toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                    <p class="card-text">${status}</p>
+                  </div>
+                  <div class="card-footer" >
+                    <button class="btn btn-light" data-toggle="modal" data-target="#ModalEdit" onclick='editForm(${objtodo})'>edit</button> |||   
+                    <button class="btn btn-light" onclick="deleteTodo('${todo._id}')">delete</button>
+                    </div>
+                    </div>
+                </div>`
 
                 num += 1
 
@@ -220,9 +235,9 @@ function getAlltodo() {
 }
 
 function editForm(obj) {
-    
+
     let todo = obj
-    
+
     let template = `
     <form id="updateToDo">
     <div class="form-group">
@@ -235,10 +250,20 @@ function editForm(obj) {
         <textarea class="form-control" id="inputDescriptionUpdate" rows="3"
         > ${todo.description}</textarea>
     </div>
+   
     <div class="form-group">
         <label for="inputDueDate">Due Date</label>
         <input type="date" class="form-control" id="inputDueDateUpdate"
-            value="${todo.duedate}" required>
+            value="${new Date(todo.duedate).toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}" required>
+    </div>
+
+    <div class="custom-control custom-radio">
+             <input type="radio" id="customRadio1" name="inputStatus" value="true" class="inputStatus custom-control-input">
+             <label class="custom-control-label" for="customRadio1">Done</label>
+            </div>
+         <div class="custom-control custom-radio">
+            <input type="radio" id="customRadio2" name="inputStatus" value="false" class="inputStatus custom-control-input">
+            <label class="custom-control-label" for="customRadio2">Not Done Yet</label>
     </div>
             <div class="modal-footer">      
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
@@ -247,7 +272,7 @@ function editForm(obj) {
             </div>
         </form> 
   `
-  $('#updateTodoModalForm').html(template)
+    $('#updateTodoModalForm').html(template)
 
 }
 
@@ -260,20 +285,24 @@ function editTodo(todoId) {
     let name = $('#inputTitleUpdate').val()
     let description = $('#inputDescriptionUpdate').val()
     let duedate = $('#inputDueDateUpdate').val()
+    let status = $('input[name=inputStatus]:checked').val();
+    // console.log(status)
+    status = status==="true" ? status=true : status=false
+    // console.log(status)
     let token = localStorage.getItem('token')
 
     event.preventDefault()
     $.ajax({
         url: 'http://localhost:3000/todo',
         method: "PATCH",
-        data: { id, name, description, duedate },
+        data: { id, name, description, duedate,status },
         headers: { token }
     })
         .done(result => {
             console.log(result)
             swal("Success!", 'You have successfully edited Task', "success");
             getAlltodo()
-            
+
         })
         .fail(err => {
             console.log(err)
@@ -318,9 +347,13 @@ function onSignIn(googleUser) {
         .then(response => {
             console.log(response.data)
             localStorage.setItem('token', response.data)
+            $('.signUpForm').hide()
+        $('.signInForm').hide()
+            $('#PoetryBox').show()
             getAlltodo()
             swal("Success!", 'You have successfully login', "success");
             $('#todoButtonCreate').show()
+            randomPoetry()
         })
         .catch(err => {
             console.log("error")
@@ -337,12 +370,55 @@ function signOut() {
             $('#click_todo').hide()
             $('.todo').hide()
             $('#todoButtonCreate').hide()
+            $('#PoetryThirdApi').empty()
+            $('#PoetryBox').hide()
             localStorage.removeItem('token')
             console.log('User signed out.');
         })
         .catch(err => {
             console.log(err)
         });
+}
+
+function randomPoetry(){
+    const proxyurl = "https://cors-anywhere.herokuapp.com/"
+    const url = "https://www.poemist.com/api/v1/randompoems"
+    axios({
+        method : "GET",
+        url : `${proxyurl+url}`,
+        headers : {
+            'Access-Control-Allow-Origin': '*'
+        }
+    })
+    .then(poems=>{
+        
+        let poemContent=poems.data[0].content
+        let poemTitle = poems.data[0].title
+        poemContent = poemContent.split('\n').slice(6).join("")
+
+        let template = `
+        <div class='col-md-6 bg-light' style="border:8px solid gray;" id="PoetryThirdApi">
+            
+        <h2 class="mt-2">${poemTitle}</h2>
+        <br>
+    
+        <p class="text-justify p-2"  >
+        ${poemContent}
+           
+            
+        </p>
+        </div>
+        `
+
+        $('#PoetryBox').append(template)
+
+        
+        console.log(poemTitle)
+        console.log(poemContent)
+    })
+    .catch(err=>{
+        console.log("error")
+    })
 }
 
 
