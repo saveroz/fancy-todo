@@ -362,17 +362,19 @@ function onSignIn(googleUser) {
 
 function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
+    $('#click_register').show()
+    $('#click_login').show()
+    $('#signout').hide()
+    $('#click_todo').hide()
+    $('.todo').hide()
+    $('#todoButtonCreate').hide()
+    $('#PoetryThirdApi').empty()
+    $('#PoetryBox').hide()
+    localStorage.removeItem('token')
+    
     auth2.signOut()
         .then(function () {
-            $('#click_register').show()
-            $('#click_login').show()
-            $('#signout').hide()
-            $('#click_todo').hide()
-            $('.todo').hide()
-            $('#todoButtonCreate').hide()
-            $('#PoetryThirdApi').empty()
-            $('#PoetryBox').hide()
-            localStorage.removeItem('token')
+     
             console.log('User signed out.');
         })
         .catch(err => {

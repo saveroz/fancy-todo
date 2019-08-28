@@ -1,4 +1,9 @@
 Fancy To Do By Savero
+
+===
+## Link Deploy
+http://fancytodo.saveroz.com/
+
 ===
 ## Usage
 ```javascript
