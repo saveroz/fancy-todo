@@ -9,11 +9,6 @@ $(document).ready(function () {
     else {
         isLoggedIn(false)
     }
-    
-    
-    
-
-
 
 
     $('#click_register').click(function () {
@@ -39,6 +34,8 @@ $(document).ready(function () {
 
 
 });
+
+const server_url = "http://35.240.188.102"
 
 function isLoggedIn(condition) {
 
@@ -75,7 +72,7 @@ function login() {
     let password = $('#password2').val()
     console.log(email, password)
     event.preventDefault();
-    axios.post('http://localhost:3000/users/login', {
+    axios.post(`${server_url}/users/login`, {
         email,
         password
     })
@@ -117,7 +114,7 @@ function createTodo() {
 
     event.preventDefault();
     $.ajax({
-        url: 'http://localhost:3000/todo/create',
+        url: `${server_url}/todo/create`,
         method: 'POST',
         data: {
             name, description, duedate
@@ -160,7 +157,7 @@ function deleteTodo(todoId) {
             if (willDelete) {
                 event.preventDefault();
                 $.ajax({
-                    url: 'http://localhost:3000/todo',
+                    url: `${server_url}/todo`,
                     method: "DELETE",
                     data: { id },
                     headers: { token }
@@ -192,7 +189,7 @@ function getAlltodo() {
     let token = localStorage.getItem('token')
 
     $.ajax({
-        url: 'http://localhost:3000/todo',
+        url: `${server_url}/todo`,
         method: 'GET',
         headers: { 'token': token }
     })
@@ -202,9 +199,9 @@ function getAlltodo() {
             let num = 1
             for (let todo of alltodo) {
                 let objtodo = JSON.stringify(todo)
-                let status ="" 
-                status = todo.status===true ?status="completed" : status="uncompleted"
-                let color= todo.status===true? "text-white bg-primary": "text-white bg-danger"
+                let status = ""
+                status = todo.status === true ? status = "completed" : status = "uncompleted"
+                let color = todo.status === true ? "text-white bg-primary" : "text-white bg-danger"
                 let cardclass = `card w-100 ${color}`
                 let template =
 
@@ -286,15 +283,15 @@ function editTodo(todoId) {
     let duedate = $('#inputDueDateUpdate').val()
     let status = $('input[name=inputStatus]:checked').val();
     // console.log(status)
-    status = status==="true" ? status=true : status=false
+    status = status === "true" ? status = true : status = false
     // console.log(status)
     let token = localStorage.getItem('token')
 
     event.preventDefault()
     $.ajax({
-        url: 'http://localhost:3000/todo',
+        url: `${server_url}/todo`,
         method: "PATCH",
-        data: { id, name, description, duedate,status },
+        data: { id, name, description, duedate, status },
         headers: { token }
     })
         .done(result => {
@@ -315,7 +312,7 @@ function signUp() {
     let password = $('#password').val()
     console.log('masuk ke signup')
     event.preventDefault();
-    axios.post('http://localhost:3000/users/register', {
+    axios.post(`${server_url}/users/register`, {
         username,
         email,
         password
@@ -338,7 +335,7 @@ function onSignIn(googleUser) {
 
     axios({
         method: "POST",
-        url: "http://localhost:3000/users/signIn",
+        url: `${server_url}/users/signIn`,
         data: {
             idToken
         }
@@ -347,8 +344,12 @@ function onSignIn(googleUser) {
             console.log(response.data)
             localStorage.setItem('token', response.data)
             $('.signUpForm').hide()
-        $('.signInForm').hide()
+            $('.signInForm').hide()
+            $('#signout').show()
             $('#PoetryBox').show()
+            $('#PoetryThirdApi').empty()
+            $('#click_register').hide()
+            $('#click_login').hide()
             getAlltodo()
             swal("Success!", 'You have successfully login', "success");
             $('#todoButtonCreate').show()
@@ -379,23 +380,24 @@ function signOut() {
         });
 }
 
-function randomPoetry(){
+function randomPoetry() {
     const proxyurl = "https://cors-anywhere.herokuapp.com/"
     const url = "https://www.poemist.com/api/v1/randompoems"
+    $('#PoetryThirdApi').empty()
     axios({
-        method : "GET",
-        url : `${proxyurl+url}`,
-        headers : {
+        method: "GET",
+        url: `${proxyurl + url}`,
+        headers: {
             'Access-Control-Allow-Origin': '*'
         }
     })
-    .then(poems=>{
-        
-        let poemContent=poems.data[0].content
-        let poemTitle = poems.data[0].title
-        poemContent = poemContent.split('\n').slice(6).join("")
+        .then(poems => {
 
-        let template = `
+            let poemContent = poems.data[0].content
+            let poemTitle = poems.data[0].title
+            poemContent = poemContent.split('\n').slice(6).join("")
+
+            let template = `
         <div class='col-md-6 bg-light' style="border:8px solid gray;" id="PoetryThirdApi">
             
         <h2 class="mt-2">${poemTitle}</h2>
@@ -409,15 +411,15 @@ function randomPoetry(){
         </div>
         `
 
-        $('#PoetryBox').append(template)
+            $('#PoetryBox').append(template)
 
-        
-        // console.log(poemTitle)
-        // console.log(poemContent)
-    })
-    .catch(err=>{
-        console.log("error")
-    })
+
+            // console.log(poemTitle)
+            // console.log(poemContent)
+        })
+        .catch(err => {
+            console.log("error")
+        })
 }
 
 
