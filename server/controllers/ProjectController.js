@@ -107,12 +107,16 @@ class ProjectController {
     static addMember(req, res, next) {
 
         let projectId = req.params.id
-        let memberId = req.body.memberId
+        let membersId = req.body.membersId
 
         Project.findById(projectId)
             .then(project => {
-                project.members.push(memberId)
-                project.save()
+                
+                for (let memberId of membersId){
+                    project.members.push(memberId)
+                    project.save()
+                }
+              
                 res.status(200).json(project)
             })
             .catch(err => {

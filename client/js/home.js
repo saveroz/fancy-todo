@@ -1,3 +1,6 @@
+let token = localStorage.getItem("token") || null
+const server_url = "http://localhost:3000"
+
 function login() {
 
     let email = $('#email2').val()
@@ -352,20 +355,4 @@ function randomPoetry() {
         })
 }
 
-function showProjectsPage(){
 
-    $("#todo").hide()
-    $("#todoButtonCreate").hide()
-    $("#PoetryBox").hide()
-    $("#ProjectPage").show()
-}
-
-
-function showMyTodos(){
-
-    $("#todo").show()
-    $("#todoButtonCreate").show()
-    $("#PoetryBox").show()
-    $("#ProjectPage").hide()
-
-}
