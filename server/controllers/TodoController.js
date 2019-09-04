@@ -1,4 +1,5 @@
 const Todo = require('../models/Todo')
+const Project = require('../models/Project')
 
 class TodoController{
 
@@ -6,7 +7,7 @@ class TodoController{
         
         let UserId = req.decode.id
        
-        Todo.find({UserId})
+        Todo.find({UserId, ProjectId:null})
         .then (alltodo=>{
             // console.log(alltodo)
             res.status(200).json(alltodo)
@@ -15,10 +16,24 @@ class TodoController{
 
     }
 
+    static getByProject(req,res,next){
+        
+        let ProjectId = req.params.id
+        console.log("masuk ke todo projects", ProjectId)
+        Todo.find({
+                ProjectId     
+        })
+        .then(alltodo=>{
+            res.status(200).json(alltodo)
+        })
+        .catch(next)
+
+    }
+
     static getOne(req, res, next){
 
-        let id = req.query.id
-
+        let id = req.params.id
+        console.log("masuk ke get One")
         Todo.findById(id)
         .then(todo=>{
             res.status(200).json(todo)
@@ -28,19 +43,13 @@ class TodoController{
 
     static create(req, res, next){
 
-        const {name, description, duedate, status} = req.body
-
-        if (!name || !description || !duedate){
-            console.log("masuk ke error")
-            throw new Error("incomplete data")
-        }
-
-        let UserId = req.decode.id
+       const {name, description, duedate, ProjectId} = req.body
+       let UserId = req.decode.id
         
-       console.log("aneh")
-        Todo.create({name, description, duedate, status, UserId})
-        .then(success=>{
-            res.status(201).json(success)
+    //    console.log("aneh")
+        Todo.create({name, ProjectId, description, duedate, UserId})
+        .then(todo=>{
+            res.status(200).json(todo)
         })
         .catch(next)
 
@@ -48,7 +57,7 @@ class TodoController{
 
     static update(req, res, next){
 
-        let id = req.body.id
+        let id = req.params.id
 
         let updatedData = {}
 
@@ -67,8 +76,8 @@ class TodoController{
     }
 
     static delete(req, res, next){
-        // let id = req.params.id
-        let id = req.body.id
+        let id = req.params.id
+        // let id = req.body.id
 
         Todo.deleteOne({
             _id : id

@@ -12,15 +12,9 @@ class UserController{
 
     static create(req, res, next){
 
-        
-        
         const {username ,email, password} = req.body
-        
-
-
         // console.log("tetap berhasil")
-        console.log(username)
-        
+        // console.log(username)        
         User.create({username, email, password})
         .then(success=>{
             res.status(201).json("your account register successfully")
@@ -61,7 +55,7 @@ class UserController{
                 'email' : user.email
             }
             let token = jwt.sign(userdata,Secret)
-            res.json(token)       
+            res.json({token})       
         })
         .catch(next)
         
@@ -78,7 +72,8 @@ class UserController{
         .then(user=>{
 
             if (!user){
-                throw new Error ('email/password not found')
+                // throw new Error ('email/password not found')
+                next({status:404, message : "email not found"})
             }
 
             else if (checkPassword(password,user.password)){
@@ -88,20 +83,26 @@ class UserController{
                     'email' : user.email
                 }
                 let token = jwt.sign(userdata,Secret)
-                res.status(200).json(token)       
+                res.status(200).json({token})       
                 // res.status(200).json("you have success to login")
             }
             else{
                 // res.status(200).json("you have failed to login")
-                throw new Error ('email/password not found')
+                // throw new Error ('email/password not found')
+                next({status:404, message : "email/password not is wrong"})
             }
             
         })
         .catch(next)
-        
+    }
 
+    static getAll(req,res, next){
 
-
+        User.find().select('_id username')
+        .then(alluser=>{
+            res.status(200).json(alluser)
+        })
+        .catch(next)
     }
 }
 

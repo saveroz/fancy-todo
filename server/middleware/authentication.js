@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const Secret="IronThrone"
 const User = require('../models/User')
+
 function authentication(req,res,next){
 
     

@@ -3,15 +3,19 @@ const Schema = mongoose.Schema
 
 const ProjectSchema = new Schema({
 
-    name : String,
+    name : {
+        type :String,
+        required : true
+    } ,
     members : [{
         type : Schema.Types.ObjectId,
         ref : 'User'
     }],
-    todos : [{
+    Owner : {
         type : Schema.Types.ObjectId,
-        ref : "Todo"
-    }]
+        ref : "User",
+        required : true
+    }
 },{
     timestamps : true,
     versionKey :false

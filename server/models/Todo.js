@@ -3,19 +3,36 @@ const Schema = mongoose.Schema
 
 
 const TodoSchema = new Schema({
-    name : String,
-    description : String,
+    name : {
+        type : String,
+        required : true
+    },
+    description : {
+        type : String,
+        required : true
+    } ,
     status : Boolean,
-    duedate: Date,
+    duedate: {
+        type : Date,
+        required : true
+    },
     UserId : {
         type : Schema.Types.ObjectId,
-        ref : 'User'
+        ref : 'User',
+        required : true
+    },
+    ProjectId : {
+        type : Schema.Types.ObjectId,
+        ref : "Project"
     }  
 },{
     timestamps : true,
     versionKey :false
 })
 TodoSchema.pre('save', function(next){
+    if (!this.ProjectId){
+        this.ProjectId = null
+    }
     let status = false
     this.status = status
     next()

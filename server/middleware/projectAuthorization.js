@@ -1,12 +1,11 @@
-const Todo = require('../models/Todo')
-
+const Project = require('../models/Project')
 
 function authorization(req,res,next){
     
-    // console.log('authorization')
-    let id = req.params.id
+    console.log('authorization')
+    let id = req.body.ProjectId
     // console.log(id)
-    Todo.findOne({
+    Project.findOne({
         '_id':id,
         'UserId': req.decode.id 
     })
@@ -26,5 +25,3 @@ function authorization(req,res,next){
         res.status(500).json(err)
     })
 }
-
-module.exports = authorization

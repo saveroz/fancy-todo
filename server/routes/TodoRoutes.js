@@ -4,10 +4,13 @@ const TodoController = require('../controllers/TodoController')
 const authentication = require('../middleware/authentication')
 const authorization = require('../middleware/authorization')
 
-router.get('/', authentication, TodoController.getAll)
-router.get('/:id', authentication, TodoController.getOne)
-router.post('/create', authentication, TodoController.create)
-router.patch('/', authentication, authorization, TodoController.update)
-router.delete('/', authentication ,authorization, TodoController.delete)
+router.use(authentication)
+
+router.get('/', TodoController.getAll)
+router.get('/projects/:id', TodoController.getByProject)
+router.get('/:id',  TodoController.getOne)
+router.post('/',  TodoController.create)
+router.patch('/:id',  authorization, TodoController.update)
+router.delete('/:id', authorization, TodoController.delete)
 
 module.exports = router

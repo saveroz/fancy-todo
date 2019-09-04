@@ -10,7 +10,7 @@ router.get('/', function(req,res){
 
 router.use('/users', userRoutes)
 
-router.use('/todo',TodoRoutes)
+router.use('/todos',TodoRoutes)
 router.use('/projects', projectRoutes)
 
 
