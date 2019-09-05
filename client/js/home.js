@@ -1,122 +1,4 @@
-let token = localStorage.getItem("token") || null
 const server_url = "http://localhost:3000"
-
-function login() {
-
-    let email = $('#email2').val()
-    let password = $('#password2').val()
-    console.log(email, password)
-    event.preventDefault();
-    axios.post(`${server_url}/users/login`, {
-        email,
-        password
-    })
-        .then(function ({ data }) {
-            // console.log(data)
-            localStorage.setItem('token', data.token)
-            // console.log(data)
-            // getAlltodo()
-            // $('#todo').show()
-            // $('#click_todo').show()
-            // $('#signout').show()
-            // $('.signInForm').hide()
-            $('#click_register').hide()
-            $('#click_login').hide()
-            $('.signUpForm').hide()
-            $('.signInForm').hide()
-            $('#signout').show()
-            $('#PoetryBox').show()
-            getAlltodo()
-            randomPoetry()
-            swal("Success!", 'You have successfully login', "success");
-            $('#todoButtonCreate').show()
-
-        })
-        .catch(err => {
-            // console.log(err.message)
-            swal("Error!", err.message, "error");
-        })
-}
-
-function signUp() {
-
-    let username = $('#username').val()
-    let email = $('#email').val()
-    let password = $('#password').val()
-    console.log('masuk ke signup')
-    event.preventDefault();
-    axios.post(`${server_url}/users/register`, {
-        username,
-        email,
-        password
-    })
-        .then(function ({ data }) {
-
-            $('.signUpForm').hide()
-            $('.signInForm').show()
-            swal("Success!", data, "success");
-
-        })
-        .catch(err => {
-            // console.log(err.message)
-            swal("Error!", err.message, "error");
-        })
-}
-
-function onSignIn(googleUser) {
-
-    let idToken = googleUser.getAuthResponse().id_token
-
-    axios({
-        method: "POST",
-        url: `${server_url}/users/signIn`,
-        data: {
-            idToken
-        }
-    })
-        .then(response => {
-            console.log(response.data)
-            localStorage.setItem('token', response.data)
-            $('.signUpForm').hide()
-            $('.signInForm').hide()
-            $('#signout').show()
-            $('#PoetryBox').show()
-            $('#PoetryThirdApi').empty()
-            $('#click_register').hide()
-            $('#click_login').hide()
-            getAlltodo()
-            swal("Success!", 'You have successfully login', "success");
-            $('#todoButtonCreate').show()
-            randomPoetry()
-        })
-        .catch(err => {
-            console.log("error")
-        })
-}
-
-function signOut() {
-    var auth2 = gapi.auth2.getAuthInstance();
-    $('#click_register').show()
-    $('#click_login').show()
-    $('#signout').hide()
-    $('#click_todo').hide()
-    $('.todo').hide()
-    $('#todoButtonCreate').hide()
-    $('#PoetryThirdApi').empty()
-    $('#PoetryBox').hide()
-    $("#ProjectPage").hide()
-    localStorage.removeItem('token')
-    $('.signInForm').show()
-    auth2.signOut()
-        .then(function () {
-
-            console.log('User signed out.');
-        })
-        .catch(err => {
-            console.log(err)
-        });
-}
-
 
 function createTodo() {
     // console.log("masuk ke create todo")
@@ -125,17 +7,16 @@ function createTodo() {
     let description = $('#inputDescriptionCreate').val()
     let duedate = $('#inputDueDateCreate').val()
 
+    let token = localStorage.getItem("token")
 
     event.preventDefault();
-    $.ajax({
-        url: `${server_url}/todos`,
-        method: 'POST',
-        data: {
-            name, description, duedate
-        },
-        headers: { token },
+    axios({
+        url : `${server_url}/todos`,
+        method : "POST",
+        data : { name, description, duedate},
+        headers : {token}
     })
-        .done(function (data) {
+    .then(({data})=>{
             swal("Success!", 'You have successfully created Task', "success");
             getAlltodo()
             // $('.createTodo').hide()
@@ -144,11 +25,35 @@ function createTodo() {
             $('#inputTitleCreate').val(null)
             $('#inputDueDateCreate').val(null)
             $('#ModalCreate').modal('hide')
-        })
-        .fail(err => {
-            let errMessage = (err.responseJSON.message)
+
+    })
+    .catch(err=>{
+        // console.log(err)
+        let errMessage = (err.response.data.message)
             swal("Error!", errMessage, "error")
-        });
+    })
+    // $.ajax({
+    //     url: `${server_url}/todos`,
+    //     method: 'POST',
+    //     data: {
+    //         name, description, duedate
+    //     },
+    //     headers: { token },
+    // })
+    //     .done(function (data) {
+    //         swal("Success!", 'You have successfully created Task', "success");
+    //         getAlltodo()
+    //         // $('.createTodo').hide()
+    //         // $('#student-list').prepend('<li>' + newStudent.name + '</li>');
+    //         $('#inputDescriptionCreate').val(null)
+    //         $('#inputTitleCreate').val(null)
+    //         $('#inputDueDateCreate').val(null)
+    //         $('#ModalCreate').modal('hide')
+    //     })
+    //     .fail(err => {
+    //         let errMessage = (err.responseJSON.message)
+    //         swal("Error!", errMessage, "error")
+    //     });
 }
 
 
@@ -156,6 +61,7 @@ function createTodo() {
 
 function deleteTodo(todoId) {
 
+    let token = localStorage.getItem("token")
 
     // let id = '5d50365ef9e4091ff0edff18'
     let id = todoId
@@ -170,37 +76,23 @@ function deleteTodo(todoId) {
             if (willDelete) {
                 event.preventDefault();
                 axios({
-                    url : `${server_url}/todos/${id}`,
-                    method : "DELETE",
-                    headers : {token}
+                    url: `${server_url}/todos/${id}`,
+                    method: "DELETE",
+                    headers: { token }
                 })
-                .then(response=>{
-                    let deletedTodo = response.data
-                    if (deletedTodo.ProjectId){
-                        getProjectTodo(deletedTodo.ProjectId)
-                       
-                    }
-                    getAlltodo()
-                    swal("Success!", 'You have successfully  delete Task', "success");
+                    .then(response => {
+                        let deletedTodo = response.data
+                        if (deletedTodo.ProjectId) {
+                            getProjectTodo(deletedTodo.ProjectId)
 
-                })
-                .catch(err=>{
-                    console.log(err)
-                })
-                // $.ajax({
-                //     url: `${server_url}/todos/${id}`,
-                //     method: "DELETE",
-                //     headers: { token }
-                // })
-                //     .done(result => {
-                //         swal("Success!", 'You have successfully  delete Task', "success");
-                //         getAlltodo()
-                        
-                //         console.log(result)
-                //     })
-                //     .fail(err => {
-                //         console.log(err)
-                //     })
+                        }
+                        getAlltodo()
+                        swal("Success!", 'You have successfully  delete Task', "success");
+
+                    })
+                    .catch(err => {
+                        console.log(err)
+                    })
             }
             else {
                 swal("Your imaginary file is safe!");
@@ -210,6 +102,7 @@ function deleteTodo(todoId) {
 
 function getAlltodo() {
 
+    let token = localStorage.getItem("token")
     console.log('masuke ke get all')
     // $('#homepage_text').hide()
     $('#todo').show()
@@ -305,8 +198,7 @@ function editForm(obj) {
 
 function editTodo(todoId) {
 
-    let cuy = todoId
-    console.log(cuy)
+    let token = localStorage.getItem("token")
     let id = todoId
     let name = $('#inputTitleUpdate').val()
     let description = $('#inputDescriptionUpdate').val()
@@ -340,6 +232,9 @@ function editTodo(todoId) {
 }
 
 function getProjectTodo(id) {
+
+    let token = localStorage.getItem("token")
+
     axios({
         url: `${server_url}/todos/projects/${id}`,
         method: "GET",
@@ -383,6 +278,8 @@ function getProjectTodo(id) {
 
 
 function randomPoetry() {
+
+    
     const proxyurl = "https://cors-anywhere.herokuapp.com/"
     const url = "https://www.poemist.com/api/v1/randompoems"
     $('#PoetryThirdApi').empty()

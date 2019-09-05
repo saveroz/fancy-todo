@@ -3,6 +3,8 @@ function getAllProjects() {
 
     $("#projectList").empty()
 
+    let token = localStorage.getItem("token")
+
     axios({
         url: `${server_url}/projects`,
         method: "GET",
@@ -42,6 +44,7 @@ function getAllProjects() {
 function createProject() {
 
     let name = $('#inputProjectName').val()
+    let token = localStorage.getItem("token")
 
     axios({
         url: `${server_url}/projects`,
@@ -62,6 +65,8 @@ function createProject() {
 
 function deleteProject(id) {
 
+    let token = localStorage.getItem("token")
+
     axios({
         url: `${server_url}/projects/${id}`,
         method: "DELETE",
@@ -79,6 +84,9 @@ function deleteProject(id) {
 
 
 function getProjectTodo(id){
+
+    let token = localStorage.getItem("token")
+
     axios({
         url: `${server_url}/todos/projects/${id}`,
         method: "GET",
@@ -120,14 +128,9 @@ function getProjectTodo(id){
 }
 
 
-
-
-
-
-
-
-
 function projectDetails(id) {
+
+    let token = localStorage.getItem("token")
 
     getProjectTodo(id)
 
@@ -168,6 +171,8 @@ function removeMember(obj) {
     console.log(projectId)
     console.log(memberId)
 
+    let token = localStorage.getItem("token")
+
     event.preventDefault()
     axios({
         url: `${server_url}/projects/${projectId}/removeMember`,
@@ -191,6 +196,8 @@ function removeMember(obj) {
 
 
 function getAllUsers() {
+
+    let token = localStorage.getItem("token")
 
     axios({
         url: `${server_url}/users`,
@@ -251,6 +258,8 @@ function addMember(projectId) {
     // console.log(projectId)
 
     let membersId = $("#userlist").val()
+
+    let token = localStorage.getItem("token")
 
     event.preventDefault()
     axios({
@@ -317,6 +326,8 @@ function addTodoForm(projectId) {
 
 
 function addTodo(projectId) {
+
+    let token = localStorage.getItem("token")
 
     let name = $('#addTodoTitle').val()
     let description = $('#addTodoDescription').val()

@@ -103,9 +103,19 @@ class UserController{
 
     static getAll(req,res, next){
 
+        let UserId = req.decode.id
         User.find().select('_id username')
-        .then(alluser=>{
-            res.status(200).json(alluser)
+        .then(usersDatabase=>{
+            let users = []
+
+            for (let user of usersDatabase){
+                // console.log(user)
+                if(user._id!=UserId){
+                    users.push(user)
+                }
+            }
+            
+            res.status(200).json(users)
         })
         .catch(next)
     }

@@ -19,7 +19,7 @@ class TodoController{
     static getByProject(req,res,next){
         
         let ProjectId = req.params.id
-        console.log("masuk ke todo projects", ProjectId)
+        // console.log("masuk ke todo projects", ProjectId)
         Todo.find({
                 ProjectId     
         })
@@ -33,7 +33,7 @@ class TodoController{
     static getOne(req, res, next){
 
         let id = req.params.id
-        console.log("masuk ke get One")
+        // console.log("masuk ke get One")
         Todo.findById(id)
         .then(todo=>{
             res.status(200).json(todo)
@@ -67,7 +67,7 @@ class TodoController{
         req.body.status && (updatedData.status = req.body.status)
         req.body.UserId && (updatedData.UserId = req.body.UserId)
 
-        console.log(updatedData)
+        // console.log(updatedData)
         Todo.findByIdAndUpdate(id, updatedData, {new:true})
         .then( updatedData =>{
             res.status(200).json(updatedData)
