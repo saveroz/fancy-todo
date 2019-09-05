@@ -32,8 +32,13 @@ class UserController{
             audience : GOOGLE_CLIENT_ID
         })
         .then( function (ticket){
-            // console.log(ticket.getPayload())
+
+            console.log(ticket.getPayload())
             const {email, name} = ticket.getPayload()
+            // {
+            //     email = admidadmas,
+            //     name = a
+            // }
             
         User.findOne( {email})
         .then(user =>{

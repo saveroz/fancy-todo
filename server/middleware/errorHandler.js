@@ -1,6 +1,6 @@
 function errorHandler (err, req, res, next) {
     console.log(err);
-    res.status(500).json({
+    res.status(err.status).json({
       message :err.message
     })
 }

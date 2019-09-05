@@ -1,30 +1,77 @@
 const Todo = require('../models/Todo')
+const Project = require('../models/Project')
 
 
-function authorization(req,res,next){
+function authorizationTodo(req,res,next){
     
-    // console.log('authorization')
+    console.log("masuk ke authorization")
     let id = req.params.id
-    // console.log(id)
-    Todo.findOne({
-        '_id':id,
-        'UserId': req.decode.id 
-    })
-    .then(Todo=>{
-        // console.log(Todo)
-        if (!Todo){
-            console.log('masuk ke null')
-            res.status(401).json(`${req.decode.username} not authorized please check carefully`)
+    let UserId = req.decode.id
+
+    Todo.findById(id)
+    .then(theTodo=>{
+
+        if (!theTodo){
+            next({status:404, message : "todo not found"})
         }
         else{
-            next()
+            if(theTodo.ProjectId){
+                let ProjectId = theTodo.ProjectId
+                Project.findById(ProjectId)
+                .then(theProject=>{
+                    
+                    if(!theProject){
+                        next({status:404, message: "project not found"})
+                    }
+                    else{
+                        
+                        if (theProject.members.includes(UserId)){
+                            next()
+                        }
+                        else{
+                            next({status:401, message : "You are not authorized"})
+                        }
+                    }
+                })
+            }
+            else{
+
+                if(theTodo.UserId==UserId){
+                    next()
+                }
+                else{
+                    next({status:401, message : "you are not authorized"})
+                }
+            }
         }
-        
-    })
-    .catch(err=>{
-        console.log("masuk ke catch")
-        res.status(500).json(err)
     })
 }
 
-module.exports = authorization
+
+function projectOwnerAuthorization(req,res,next){
+    
+    
+    let ProjectId = req.params.id
+    let Owner = req.decode.id
+    
+    Project.findById(ProjectId)
+    .then(theproject=>{
+        if (!theproject){
+            next({status:404, message : "Project not found"})
+        }
+        else {
+
+            if (theproject.Owner==Owner){
+                next()
+            }
+            else{
+                // console.log(typeof theproject.Owner ,"project owner")
+                // console.log(typeof Owner ,"owner")
+                next({status : 401, message:"You are not authorized"})
+            }
+        }
+    })
+    .catch(next)
+}
+
+module.exports = {authorizationTodo, projectOwnerAuthorization}

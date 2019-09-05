@@ -8,11 +8,13 @@ function authentication(req,res,next){
     try {
         
         const token = req.headers.token
-       
+        // console.log(token)
         const decode = jwt.verify(token, Secret)
         
         req.decode = decode
         let id = req.decode.id
+
+        // console.log(id)
         
 
         User.findById(id)

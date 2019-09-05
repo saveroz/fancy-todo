@@ -79,7 +79,7 @@ class TodoController{
         let id = req.params.id
         // let id = req.body.id
 
-        Todo.deleteOne({
+        Todo.findOneAndRemove({
             _id : id
         })
         .then(success=>{

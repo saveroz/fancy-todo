@@ -97,26 +97,24 @@ class ProjectController {
             })
             .catch(next)
 
-        // Project.findByIdAndDelete(id)
-        // .then(success=>{
-        //     res.status(200).json(success)
-        // })
-        // .catch(next)
+       
     }
 
     static addMember(req, res, next) {
 
         let projectId = req.params.id
         let membersId = req.body.membersId
-
+       
         Project.findById(projectId)
             .then(project => {
                 
                 for (let memberId of membersId){
-                    project.members.push(memberId)
-                    project.save()
+                    if(!project.members.includes(memberId)){
+                        console.log("masuk ke add member controller")
+                        project.members.push(memberId)
+                        project.save()
+                    }
                 }
-              
                 res.status(200).json(project)
             })
             .catch(err => {

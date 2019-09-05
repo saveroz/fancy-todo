@@ -14,6 +14,7 @@ app.use(cors())
 app.use(express.urlencoded({extended:false})) 
 app.use(express.json())
 
+// mongoose.set('useFindAndModify', false);
 mongoose.connect(db_url, {useNewUrlParser:true})
 .
 then(function(){

@@ -1,6 +1,7 @@
 $(document).ready(function () {
     $('.signUpForm').show()
     $('.signInForm').hide()
+    
 
     if (localStorage.getItem('token')) {
         isLoggedIn(true)
@@ -51,7 +52,7 @@ function isLoggedIn(condition) {
         $('#todoButtonCreate').show()
         $('.signUpForm').hide()
         $('.signInForm').hide()
-        $("#ProjectPage").show()
+        $("#ProjectPage").hide()
         getAllProjects()
         getAlltodo()
         randomPoetry()
