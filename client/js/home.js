@@ -10,37 +10,35 @@ function createTodo() {
     let token = localStorage.getItem("token")
 
     event.preventDefault();
-    axios({
+    $.ajax({
         url : `${server_url}/todos`,
         method : "POST",
         data : { name, description, duedate},
         headers : {token}
     })
-    .then(({data})=>{
-            swal("Success!", 'You have successfully created Task', "success");
-            getAlltodo()
+    .done(data=>{
+        swal("Success!", 'You have successfully created Task', "success");
+        getAlltodo()
             // $('.createTodo').hide()
             // $('#student-list').prepend('<li>' + newStudent.name + '</li>');
-            $('#inputDescriptionCreate').val(null)
-            $('#inputTitleCreate').val(null)
-            $('#inputDueDateCreate').val(null)
-            $('#ModalCreate').modal('hide')
+        $('#inputDescriptionCreate').val(null)
+        $('#inputTitleCreate').val(null)
+        $('#inputDueDateCreate').val(null)
+        $('#ModalCreate').modal('hide')
+    })
+    .fail(err=>{
+        let errMessage = (err.responseJSON.message)
+        swal("Error!", errMessage, "error")
 
     })
-    .catch(err=>{
-        // console.log(err)
-        let errMessage = (err.response.data.message)
-            swal("Error!", errMessage, "error")
-    })
-    // $.ajax({
-    //     url: `${server_url}/todos`,
-    //     method: 'POST',
-    //     data: {
-    //         name, description, duedate
-    //     },
-    //     headers: { token },
+
+    // axios({
+    //     url : `${server_url}/todos`,
+    //     method : "POST",
+    //     data : { name, description, duedate},
+    //     headers : {token}
     // })
-    //     .done(function (data) {
+    // .then(({data})=>{
     //         swal("Success!", 'You have successfully created Task', "success");
     //         getAlltodo()
     //         // $('.createTodo').hide()
@@ -49,11 +47,13 @@ function createTodo() {
     //         $('#inputTitleCreate').val(null)
     //         $('#inputDueDateCreate').val(null)
     //         $('#ModalCreate').modal('hide')
-    //     })
-    //     .fail(err => {
-    //         let errMessage = (err.responseJSON.message)
-    //         swal("Error!", errMessage, "error")
-    //     });
+
+    // })
+    // .catch(err=>{
+    //     // console.log(err)
+    //     let errMessage = (err.response.data.message)
+    //     swal("Error!", errMessage, "error")
+    // })
 }
 
 
@@ -75,35 +75,57 @@ function deleteTodo(todoId) {
         .then((willDelete) => {
             if (willDelete) {
                 event.preventDefault();
-                axios({
+                $.ajax({
                     url: `${server_url}/todos/${id}`,
                     method: "DELETE",
                     headers: { token }
                 })
-                    .then(response => {
-                        let deletedTodo = response.data
-                        if (deletedTodo.ProjectId) {
-                            getProjectTodo(deletedTodo.ProjectId)
-
-                        }
-                        getAlltodo()
-                        swal("Success!", 'You have successfully  delete Task', "success");
-
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
+                .done(response=>{
+                    let deletedTodo = response
+                    if (deletedTodo.ProjectId) {
+                        getProjectTodo(deletedTodo.ProjectId)
+                    }
+                    getAlltodo()
+                    swal("Success!", 'You have successfully  delete Task', "success");
+                })
+                .fail(err=>{
+                    console.log(err)
+                })
             }
-            else {
-                swal("Your imaginary file is safe!");
+            else{
+                swal("Your imaginary file is safe!")
             }
         })
+
+        //         axios({
+        //             url: `${server_url}/todos/${id}`,
+        //             method: "DELETE",
+        //             headers: { token }
+        //         })
+        //             .then(response => {
+        //                 let deletedTodo = response.data
+        //                 if (deletedTodo.ProjectId) {
+        //                     getProjectTodo(deletedTodo.ProjectId)
+
+        //                 }
+        //                 getAlltodo()
+        //                 swal("Success!", 'You have successfully  delete Task', "success");
+
+        //             })
+        //             .catch(err => {
+        //                 console.log(err)
+        //             })
+        //     }
+        //     else {
+        //         swal("Your imaginary file is safe!");
+        //     }
+        // })
 }
 
 function getAlltodo() {
 
     let token = localStorage.getItem("token")
-    console.log('masuke ke get all')
+    // console.log('masuke ke get all')
     // $('#homepage_text').hide()
     $('#todo').show()
     $('#alltask').show()
@@ -150,7 +172,8 @@ function getAlltodo() {
 
         })
         .fail(err => {
-            console.log(err)
+            console.log(err.status)
+            console.log(err.responseJSON.message)
         })
 }
 
@@ -208,26 +231,46 @@ function editTodo(todoId) {
     status = status === "true" ? status = true : status = false
     // console.log(status)
     event.preventDefault()
-    axios({
+    $.ajax({
         url: `${server_url}/todos/${id}`,
         method: "PATCH",
         data: { name, description, duedate, status },
         headers: { token }
     })
-        .then(response => {
-            // console.log(response.data)
-            let todo = response.data
-
-            if (todo.ProjectId) {
-                getProjectTodo(todo.ProjectId)
-            }
-
-            swal("Success!", 'You have successfully edited Task', "success");
+    .done(todo=>{
+        if (todo.ProjectId) {
+            getProjectTodo(todo.ProjectId)
+        }
+        else{
             getAlltodo()
-        })
-        .catch(err => {
-            console.log(err)
-        })
+        }
+        
+        swal("Success!", 'You have successfully edited Task', "success");
+    })
+    .fail(err=>{
+        console.log(err)
+    })
+
+    // axios({
+    //     url: `${server_url}/todos/${id}`,
+    //     method: "PATCH",
+    //     data: { name, description, duedate, status },
+    //     headers: { token }
+    // })
+    //     .then(response => {
+    //         // console.log(response.data)
+    //         let todo = response.data
+
+    //         if (todo.ProjectId) {
+    //             getProjectTodo(todo.ProjectId)
+    //         }
+
+    //         swal("Success!", 'You have successfully edited Task', "success");
+    //         getAlltodo()
+    //     })
+    //     .catch(err => {
+    //         console.log(err)
+    //     })
 
 }
 
@@ -235,16 +278,14 @@ function getProjectTodo(id) {
 
     let token = localStorage.getItem("token")
 
-    axios({
+    $.ajax({
         url: `${server_url}/todos/projects/${id}`,
         method: "GET",
         headers: { token }
     })
-        .then(response => {
+    .done(todosProjects=>{
             $("#todoProjectList").empty()
-            // console.log(response.data)
-            let todosProjects = response.data
-
+            
             for (let todo of todosProjects) {
                 let objtodo = JSON.stringify(todo)
                 let status = ""
@@ -269,10 +310,49 @@ function getProjectTodo(id) {
                 `
                 $("#todoProjectList").append(template)
             }
-        })
-        .catch(err => {
-            console.log(err)
-        })
+    })
+    .fail(err=>{
+        console.log(err)
+    })
+
+    // axios({
+    //     url: `${server_url}/todos/projects/${id}`,
+    //     method: "GET",
+    //     headers: { token }
+    // })
+    //     .then(response => {
+    //         $("#todoProjectList").empty()
+    //         // console.log(response.data)
+    //         let todosProjects = response.data
+
+    //         for (let todo of todosProjects) {
+    //             let objtodo = JSON.stringify(todo)
+    //             let status = ""
+    //             status = todo.status === true ? status = "completed" : status = "uncompleted"
+    //             let color = todo.status === true ? "text-white bg-primary" : "text-white bg-danger"
+    //             let cardclass = `card w-75 ${color} mb-3`
+    //             let template =
+    //                 `
+    //             <div class="${cardclass}">
+    //                 <div class="card-body">
+    //                   <h5 class="card-title">${todo.name}</h5>
+    //                   <p class="card-text">${todo.description}</p>
+    //                   <p class="card-text">${new Date(todo.duedate).toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+    //                   <p class="card-text">${status}</p>
+    //                 </div>
+    //                 <div class="card-footer">
+    //                     <button class="btn btn-light" data-toggle="modal" data-target="#ModalEdit" onclick='editForm(${objtodo})'>edit</button>
+    //                     |||
+    //                     <button class="btn btn-light" onclick="deleteTodo('${todo._id}')">delete</button>
+    //                 </div>
+    //             </div>
+    //             `
+    //             $("#todoProjectList").append(template)
+    //         }
+    //     })
+    //     .catch(err => {
+    //         console.log(err)
+    //     })
 }
 
 
@@ -283,6 +363,7 @@ function randomPoetry() {
     const proxyurl = "https://cors-anywhere.herokuapp.com/"
     const url = "https://www.poemist.com/api/v1/randompoems"
     $('#PoetryThirdApi').empty()
+    
     axios({
         method: "GET",
         url: `${proxyurl + url}`,

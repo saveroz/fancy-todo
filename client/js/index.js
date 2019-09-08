@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $('.signUpForm').show()
     $('.signInForm').hide()
-    
+
 
     if (localStorage.getItem('token')) {
         isLoggedIn(true)
@@ -75,7 +75,7 @@ function isLoggedIn(condition) {
 
 
 
-function showProjectsPage(){
+function showProjectsPage() {
 
     $("#todo").hide()
     $("#todoButtonCreate").hide()
@@ -85,7 +85,7 @@ function showProjectsPage(){
 }
 
 
-function showMyTodos(){
+function showMyTodos() {
 
     $("#todo").show()
     $("#todoButtonCreate").show()
@@ -98,14 +98,16 @@ function login() {
 
     let email = $('#email2').val()
     let password = $('#password2').val()
-    console.log(email, password)
+    // console.log(email, password)
     event.preventDefault();
-    axios.post(`${server_url}/users/login`, {
-        email,
-        password
+
+    $.ajax({
+        method: "POST",
+        url :  `${server_url}/users/login`,
+        data : {email, password}
     })
-        .then(function ({ data }) {
-            // console.log(data)
+        .done(data => {
+            console.log(data)
             localStorage.setItem('token', data.token)
             // console.log(data)
             // getAlltodo()
@@ -125,10 +127,38 @@ function login() {
             $('#todoButtonCreate').show()
 
         })
-        .catch(err => {
-            // console.log(err.message)
+        .fail(err => {
             swal("Error!", err.message, "error");
         })
+    // axios.post(`${server_url}/users/login`, {
+    //     email,
+    //     password
+    // })
+    //     .then(function ({ data }) {
+    //         // console.log(data)
+    //         localStorage.setItem('token', data.token)
+    //         // console.log(data)
+    //         // getAlltodo()
+    //         $('#todo').show()
+    //         $('#click_todo').show()
+    //         $('#signout').show()
+    //         $('.signInForm').hide()
+    //         $('#click_register').hide()
+    //         $('#click_login').hide()
+    //         $('.signUpForm').hide()
+    //         $('.signInForm').hide()
+    //         $('#signout').show()
+    //         $('#PoetryBox').show()
+    //         getAlltodo()
+    //         randomPoetry()
+    //         swal("Success!", 'You have successfully login', "success");
+    //         $('#todoButtonCreate').show()
+
+    //     })
+    //     .catch(err => {
+    //         // console.log(err.message)
+    //         swal("Error!", err.message, "error");
+    //     })
 }
 
 function signUp() {
@@ -136,40 +166,59 @@ function signUp() {
     let username = $('#username').val()
     let email = $('#email').val()
     let password = $('#password').val()
-    console.log('masuk ke signup')
+    // console.log('masuk ke signup')
     event.preventDefault();
-    axios.post(`${server_url}/users/register`, {
-        username,
-        email,
-        password
-    })
-        .then(function ({ data }) {
 
+    $.ajax({
+        url: `${server_url}/users/register`,
+        method: "POST",
+        data: { username, email, password },
+    })
+        .done(data => {
             $('.signUpForm').hide()
             $('.signInForm').show()
-            swal("Success!", data, "success");
+            // swal("Success!", data, "success");
+        })
+        .fail((err) => {
+      
+            console.log(err.status)
+            console.log(err.responseJSON.message)
+ 
+        })
 
-        })
-        .catch(err => {
-            // console.log(err.message)
-            swal("Error!", err.message, "error");
-        })
+    // axios.post(`${server_url}/users/register`, {
+    //     username,
+    //     email,
+    //     password
+    // })
+    //     .then(function ({ data }) {
+
+    //         $('.signUpForm').hide()
+    //         $('.signInForm').show()
+    //         swal("Success!", data, "success");
+
+    //     })
+    //     .catch(err => {
+    //         // console.log(err.message)
+    //         swal("Error!", err.message, "error");
+    //     })
 }
 
 function onSignIn(googleUser) {
 
     let idToken = googleUser.getAuthResponse().id_token
 
-    axios({
+    event.preventDefault()
+    $.ajax({
         method: "POST",
         url: `${server_url}/users/signIn`,
         data: {
             idToken
         }
     })
-        .then(response => {
-            console.log(response.data)
-            localStorage.setItem('token', response.data)
+        .done(data => {
+            // console.log(response.data)
+            localStorage.setItem('token', data.token)
             $('.signUpForm').hide()
             $('.signInForm').hide()
             $('#signout').show()
@@ -182,9 +231,34 @@ function onSignIn(googleUser) {
             $('#todoButtonCreate').show()
             randomPoetry()
         })
-        .catch(err => {
-            console.log("error")
+        .fail(err=>{
+            console.log(err)
         })
+    // axios({
+    //     method: "POST",
+    //     url: `${server_url}/users/signIn`,
+    //     data: {
+    //         idToken
+    //     }
+    // })
+    //     .then(response => {
+    //         console.log(response.data)
+    //         localStorage.setItem('token', response.data)
+    //         $('.signUpForm').hide()
+    //         $('.signInForm').hide()
+    //         $('#signout').show()
+    //         $('#PoetryBox').show()
+    //         $('#PoetryThirdApi').empty()
+    //         $('#click_register').hide()
+    //         $('#click_login').hide()
+    //         getAlltodo()
+    //         swal("Success!", 'You have successfully login', "success");
+    //         $('#todoButtonCreate').show()
+    //         randomPoetry()
+    //     })
+    //     .catch(err => {
+    //         console.log("error")
+    //     })
 }
 
 function signOut() {
@@ -214,12 +288,12 @@ function signOut() {
         });
 }
 
-function beforeLogin(){
+function beforeLogin() {
 
 
 }
 
-function afterLogin(){
+function afterLogin() {
 
 }
 

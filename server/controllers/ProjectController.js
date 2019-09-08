@@ -104,6 +104,8 @@ class ProjectController {
 
         let projectId = req.params.id
         let membersId = req.body.membersId
+        console.log("masuk ke add member")
+        console.log(req.body.membersId)
        
         Project.findById(projectId)
             .then(project => {
