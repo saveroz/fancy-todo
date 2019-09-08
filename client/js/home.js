@@ -32,9 +32,10 @@ function createTodo() {
         Swal.close()
         Swal.fire({
             type: 'error',
-            title: message,
+            title: "failed to created task",
+            text : message,
             showConfirmButton: false,
-            timer: 1500
+            timer: 2500
         })
     })
 }
@@ -84,7 +85,8 @@ function deleteTodo(todoId) {
                     Swal.close()
                     Swal.fire({
                         type: 'error',
-                        title: message ,
+                        title: "failed to delete task",
+                        text : message,
                         showConfirmButton: false,
                         timer: 1500
                     })
@@ -201,9 +203,7 @@ function editTodo(todoId) {
     let description = $('#inputDescriptionUpdate').val()
     let duedate = $('#inputDueDateUpdate').val()
     let status = $('input[name=inputStatus]:checked').val();
-    // console.log(status)
-    status = status === "true" ? status = true : status = false
-    // console.log(status)
+   
     Swal.showLoading()
     event.preventDefault()
     $.ajax({
@@ -235,7 +235,8 @@ function editTodo(todoId) {
         Swal.close()
         Swal.fire({
             type: 'error',
-            title: message,
+            title: "failed to edit task",
+            text : message,
             showConfirmButton: false,
             timer: 1500
         })

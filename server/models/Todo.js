@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-
+const moment = require("moment")
 
 const TodoSchema = new Schema({
     name : {
@@ -14,6 +14,7 @@ const TodoSchema = new Schema({
     status : Boolean,
     duedate: {
         type : Date,
+        min : [new Date().toLocaleDateString(), "Minimum due date is today"],
         required : true
     },
     UserId : {
@@ -29,6 +30,10 @@ const TodoSchema = new Schema({
     timestamps : true,
     versionKey :false
 })
+
+
+
+
 TodoSchema.pre('save', function(next){
     if (!this.ProjectId){
         this.ProjectId = null

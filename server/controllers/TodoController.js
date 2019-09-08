@@ -52,7 +52,7 @@ class TodoController {
         //    console.log("aneh")
         Todo.create({ name, ProjectId, description, duedate, UserId })
             .then(todo => {
-                res.status(200).json(todo)
+                res.status(201).json(todo)
             })
             .catch(next)
 
