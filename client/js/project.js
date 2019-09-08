@@ -16,7 +16,8 @@ function getAllProjects() {
                 let template = ` 
             <div class="col p-3" style="border-bottom: gray 2px solid;">
                     <div>
-                            <p style="font-size: 19px;">${project.name}</p>
+                            <p style="font-size: 19px;">Project Name : ${project.name}</p>
+                            <p>created by : ${project.Owner.username}</p>
                     </div>
                     <div>
                             <button class="btn btn-secondary mb-3" onclick="projectDetails('${project._id}')">Project Details</button>
@@ -64,10 +65,11 @@ function createProject() {
         })
         .fail(err => {
             console.log(err)
+            let message = err.responseJSON && err.responseJSON.message || "you have failed create the project"
             Swal.close()
             Swal.fire({
                 type : "error",
-                title: "You have failed created new project",
+                title: message,
                 showConfirmButton : false,
                 timer :false
             })
@@ -110,11 +112,13 @@ function deleteProject(id) {
                     getAllProjects()
                 })
                 .fail(err => {
-                    console.log(err.responseJSON.message)
+                    // console.log(err)
+                    let message = err.responseJSON && err.responseJSON.message || "you have failed delete the project"
                     Swal.close()
                     Swal.fire({
                         type : "error",
-                        title : "you have failed delete the project",
+                        title : message,
+                        text : "only owner of project can remove the project",
                         showConfirmButton : false,
                         timer : 1500
                     })
@@ -159,6 +163,7 @@ function getProjectTodo(id) {
                   <p class="card-text">${todo.description}</p>
                   <p class="card-text">${new Date(todo.duedate).toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
                   <p class="card-text">${status}</p>
+                  <p class="card-text">created by : ${todo.UserId.username}</p>
                 </div>
                 <div class="card-footer">
                     <button class="btn btn-light" data-toggle="modal" data-target="#ModalEdit" onclick='editForm(${objtodo})'>edit</button>
@@ -255,13 +260,15 @@ function removeMember(obj) {
                         console.log(data)
                     })
                     .fail(err => {
-                        console.log(err)
+                        console.log(err.responseJSON.message)
+                        let message = err.responseJSON && err.responseJSON.message || "You have failed remove this member"
                         Swal.close()
                         Swal.fire({
                             type : "error",
-                            title : "You have failed remove this member",
+                            title : message,
+                            text : "Only owner of Project can remove member",
                             showConfirmButton : false,
-                            timer : 1500
+                            timer : 2000
                         })
                     })
             }
@@ -359,11 +366,13 @@ function addMember(projectId) {
         })
         .catch(err => {
             console.log(err)
+            let message = err.responseJSON && err.responseJSON.message || 'You have failed to to added member to this project' 
             Swal.fire({
                 type: 'error',
-                title: 'You have failed to to added member to this project',
+                title: message,
+                text : "Only owner of project can add member",
                 showConfirmButton: false,
-                timer: 1500
+                timer: 2000
             })
         })
 
@@ -444,11 +453,12 @@ function addTodo(projectId) {
             getProjectTodo(projectId)
         })
         .fail(err => {
-            console.log(err)
+            // console.log(err)
             Swal.close()
+            let message = err.responseJSON && err.responseJSON.message || "failed to create new todo in project"
             Swal.fire({
                 type: "error",
-                title: "failed to create new todo in project",
+                title: message,
                 showConfirmButton: false,
                 timer: 1500
             })

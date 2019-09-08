@@ -12,7 +12,7 @@ router.get('/:id', ProjectController.getOne)
 router.post('/', ProjectController.create)
 router.delete('/:id',projectOwnerAuthorization, ProjectController.delete)
 router.patch('/:id',projectOwnerAuthorization,  ProjectController.update)
-router.post('/:id/addMember', ProjectController.addMember)
+router.post('/:id/addMember',projectOwnerAuthorization, ProjectController.addMember)
 router.post('/:id/removeMember',projectOwnerAuthorization, ProjectController.removeMember)
 
 

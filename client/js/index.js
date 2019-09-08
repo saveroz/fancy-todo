@@ -114,6 +114,9 @@ function login() {
             afterLogin()
             getAlltodo()
             randomPoetry()
+            $('#email2').val(null)
+            $('#password2').val(null)
+            $('#todoButtonCreate').show()
             
             // swal("Success!", 'You have successfully login', "success");
             Swal.fire({
@@ -122,13 +125,13 @@ function login() {
                 showConfirmButton: false,
                 timer: 1500
             })
-            $('#todoButtonCreate').show()
 
         })
         .fail(err => {
+            let message = err.responseJSON && err.responseJSON.message || "You have failed to login"
             Swal.fire({
                 type: "error",
-                title: err.responseJSON.message,
+                title: message,
                 showConfirmButton: false,
                 timer: 1500
             })
@@ -161,13 +164,12 @@ function signUp() {
             })
         })
         .fail((err) => {
-
-            console.log(err.status)
-            console.log(err.responseJSON.message)
-            // swal("Error!", err.message, "error");
+            // console.log(err.status)
+            // console.log(err.responseJSON.message)
+            let message = err.responseJSON && err.responseJSON.message || "failed to register"
             Swal.fire({
                 type: "error",
-                title: err.responseJSON.message,
+                title: message,
                 showConfirmButton: false,
                 timer: 1500
             })
@@ -178,8 +180,8 @@ function signUp() {
 function onSignIn(googleUser) {
 
     let idToken = googleUser.getAuthResponse().id_token
-
-    event.preventDefault()
+    Swal.showLoading()
+    event.preventDefault()  
     $.ajax({
         method: "POST",
         url: `${server_url}/users/signIn`,
@@ -190,20 +192,29 @@ function onSignIn(googleUser) {
         .done(data => {
             // console.log(data)
             localStorage.setItem('token', data.token)
-            $('.signUpForm').hide()
-            $('.signInForm').hide()
-            $('#signout').show()
-            $('#PoetryBox').show()
-            $('#PoetryThirdApi').empty()
-            $('#click_register').hide()
-            $('#click_login').hide()
+            afterLogin()
             getAlltodo()
-            swal("Success!", 'You have successfully login', "success");
-            $('#todoButtonCreate').show()
             randomPoetry()
+            $('#todoButtonCreate').show()
+            Swal.close()
+            Swal.fire({
+                type: 'success',
+                title: 'You Have successfully login with google!',
+                showConfirmButton: false,
+                timer: 1500
+            })
+            
+           
         })
         .fail(err => {
-            console.log(err)
+            let message = err.responseJSON && err.responseJSON.message || " failed to signin with google"
+            Swal.close()
+            Swal.fire({
+                type: "error",
+                title: message,
+                showConfirmButton: false,
+                timer: 2000
+            })
         })
 
 }

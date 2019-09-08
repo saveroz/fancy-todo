@@ -65,8 +65,8 @@ function projectOwnerAuthorization(req,res,next){
         else {
 
             if (theproject.Owner==Owner){
-                console.log(theproject.Owner)
-                console.log(theproject.Owner)
+                // console.log(theproject.Owner)
+                // console.log(theproject.Owner)
                 next()
             }
             else{

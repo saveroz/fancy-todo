@@ -28,11 +28,11 @@ function createTodo() {
         $('#ModalCreate').modal('hide')
     })
     .fail(err=>{
-        // let errMessage = (err.responseJSON.message)
+        let message = err.responseJSON && err.responseJSON.message || 'You have failed to created task'
         Swal.close()
         Swal.fire({
             type: 'error',
-            title: 'You have failed to created task',
+            title: message,
             showConfirmButton: false,
             timer: 1500
         })
@@ -80,10 +80,11 @@ function deleteTodo(todoId) {
                     )
                 })
                 .fail(err=>{
+                    let message = err.responseJSON && err.responseJSON.message || 'You have failed to deleted task'
                     Swal.close()
                     Swal.fire({
                         type: 'error',
-                        title: 'You have failed to deleted task',
+                        title: message ,
                         showConfirmButton: false,
                         timer: 1500
                     })
@@ -145,7 +146,7 @@ function getAlltodo() {
 
         })
         .fail(err => {
-            console.log(err.status)
+            console.log(err)
             // console.log(err.responseJSON.message)
         })
 }
@@ -230,10 +231,11 @@ function editTodo(todoId) {
     })
     .fail(err=>{
         // console.log(err)
+        let message = err.responseJSON && err.responseJSON.message || 'You have failed to edit task'
         Swal.close()
         Swal.fire({
             type: 'error',
-            title: 'You have failed to edit task',
+            title: message,
             showConfirmButton: false,
             timer: 1500
         })
@@ -267,6 +269,7 @@ function getProjectTodo(id) {
                       <p class="card-text">${todo.description}</p>
                       <p class="card-text">${new Date(todo.duedate).toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
                       <p class="card-text">${status}</p>
+                      <p class="card-text">created by : ${todo.UserId.username}</p>
                     </div>
                     <div class="card-footer">
                         <button class="btn btn-light" data-toggle="modal" data-target="#ModalEdit" onclick='editForm(${objtodo})'>edit</button>

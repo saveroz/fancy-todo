@@ -33,7 +33,14 @@ class ProjectController {
         // console.log("masuk ke get all")
         let UserId = req.decode.id
         let userProjects = []
-        Project.find().populate("members")
+        Project.find().populate({
+                path : "members",
+                select : "_id username email"
+        })
+        .populate({
+                path  :"Owner",
+                select : "username"
+        })
             .then(allproject => {
                 // console.log(allproject)
                 for (let project of allproject) {
@@ -74,6 +81,7 @@ class ProjectController {
     static delete(req, res, next) {
 
         let id = req.params.id
+        
 
         Project.findById(id)
             .then(project => {
@@ -112,7 +120,7 @@ class ProjectController {
                 
                 for (let memberId of membersId){
                     if(!project.members.includes(memberId)){
-                        console.log("masuk ke add member controller")
+                        // console.log("masuk ke add member controller")
                         project.members.push(memberId)
                         project.save()
                     }
@@ -128,16 +136,23 @@ class ProjectController {
 
         let projectId = req.params.id
         let memberId = req.body.memberId
+        let OwnerId = req.decode.id
         // console.log(memberId)
         // console.log("masuk ke remove member")
-
-        Project.findById(projectId)
+        if (memberId==OwnerId){
+            next({status:400, message:"you cannot remove owner of project"})
+            // console.log("masuk ke member id yang sama")
+        }
+        else{
+            Project.findById(projectId)
             .then(project => {
                 project.members.pull(memberId)
                 project.save()
                 res.status(200).json(project)
             })
             .catch(next)
+        }
+    
     }
 
     static addTodo(req, res, next) {
