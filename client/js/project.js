@@ -35,48 +35,13 @@ function getAllProjects() {
         .fail(err => {
             console.log(err)
         })
-
-    // axios({
-    //     url: `${server_url}/projects`,
-    //     method: "GET",
-    //     headers: { token }
-    // })
-    //     .then(response => {
-    //         // console.log(response)
-    //         let projects = response.data
-
-    //         for (let project of projects) {
-    //             let template = ` 
-    //         <div class="col p-3" style="border-bottom: gray 2px solid;">
-    //                 <div>
-    //                         <p style="font-size: 19px;">${project.name}</p>
-    //                 </div>
-    //                 <div>
-    //                         <button class="btn btn-secondary mb-3" onclick="projectDetails('${project._id}')">Project Details</button>
-    //                 </div>
-    //                 <div>       
-    //                     <button class="btn btn-secondary" data-toggle="modal" data-target="#memberModal" onclick="addMemberForm('${project._id}')">add member</button>
-    //                     <button class="btn btn-secondary" data-toggle="modal" data-target="#templateModalAddTodo" onclick="addTodoForm('${project._id}')">add todo</button>
-    //                     <button class="btn btn-secondary" onclick="deleteProject('${project._id}')">delete</button>
-    //                 </div>
-    //                 <!-- <hr> -->
-    //             </div>
-    //         `
-    //             $("#projectList").prepend(template)
-    //         }
-
-    //     })
-    //     .catch(err => {
-    //         console.log(response)
-    //     })
-
 }
 
 function createProject() {
 
     let name = $('#inputProjectName').val()
     let token = localStorage.getItem("token")
-
+    Swal.showLoading()
     event.preventDefault()
     $.ajax({
         url: `${server_url}/projects`,
@@ -85,6 +50,13 @@ function createProject() {
         headers: { token }
     })
         .done(data => {
+            Swal.close()
+            Swal.fire({
+                type : "success",
+                title: "You have successfully created new project",
+                showConfirmButton : false,
+                timer :false
+            })
             $('#ModalCreateProject').modal('hide')
             $('#inputProjectName').val(null)
             getAllProjects()
@@ -92,54 +64,72 @@ function createProject() {
         })
         .fail(err => {
             console.log(err)
+            Swal.close()
+            Swal.fire({
+                type : "error",
+                title: "You have failed created new project",
+                showConfirmButton : false,
+                timer :false
+            })
         })
 
-    // axios({
-    //     url: `${server_url}/projects`,
-    //     method: "POST",
-    //     data: { name },
-    //     headers: { token }
-    // })
-    //     .then(response => {
-    //         $('#ModalCreateProject').modal('hide')
-    //         $('#inputProjectName').val(null)
-    //         getAllProjects()
-    //         console.log(response.data)
-    //     })
-    //     .catch(err => {
-    //         console.log(err)
-    //     })
 }
 
 function deleteProject(id) {
 
     let token = localStorage.getItem("token")
 
-    event.preventDefault()
-    $.ajax({
-        url: `${server_url}/projects/${id}`,
-        method: "DELETE",
-        headers: { token }
+    Swal.fire({
+        title: "Are you sure ?",
+        text: "Once deleted, you will not be able to recover this project!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
     })
-        .done(data => {
-            console.log(data)
-            getAllProjects()
-        })
-        .fail(err => {
-            console.log(err)
-        })
-    // axios({
-    //     url: `${server_url}/projects/${id}`,
-    //     method: "DELETE",
-    //     headers: { token }
-    // })
-    //     .then(response => {
-    //         console.log(response.data)
-    //         getAllProjects()
-    //     })
-    //     .catch(err => {
-    //         console.log(err)
-    //     })
+    .then(result=>{
+
+        if(result.value){
+            Swal.showLoading()
+            event.preventDefault()
+            $.ajax({
+                url: `${server_url}/projects/${id}`,
+                method: "DELETE",
+                headers: { token }
+            })
+                .done(data => {
+                    // console.log(data)
+                    Swal.close()
+                    Swal.fire({
+                        type : "success",
+                        title : "you have successfully delete the project",
+                        showConfirmButton : false,
+                        timer : 1500
+                    })
+                    getAllProjects()
+                })
+                .fail(err => {
+                    console.log(err.responseJSON.message)
+                    Swal.close()
+                    Swal.fire({
+                        type : "error",
+                        title : "you have failed delete the project",
+                        showConfirmButton : false,
+                        timer : 1500
+                    })
+                })
+        }
+
+        else {
+
+        }
+
+
+
+    })
+
+
 
 }
 
@@ -154,6 +144,7 @@ function getProjectTodo(id) {
         headers: { token }
     })
         .done(todosProjects => {
+            $("#todoProjectList").empty()
             for (let todo of todosProjects) {
                 let objtodo = JSON.stringify(todo)
                 let status = ""
@@ -183,44 +174,6 @@ function getProjectTodo(id) {
             console.log(err)
         })
 
-    // axios({
-    //     url: `${server_url}/todos/projects/${id}`,
-    //     method: "GET",
-    //     headers: { token }
-    // })
-    //     .then(response => {
-    //         $("#todoProjectList").empty()
-    //         // console.log(response.data)
-    //         let todosProjects = response.data
-
-    //         for (let todo of todosProjects) {
-    //             let objtodo = JSON.stringify(todo)
-    //             let status = ""
-    //             status = todo.status === true ? status = "completed" : status = "uncompleted"
-    //             let color = todo.status === true ? "text-white bg-primary" : "text-white bg-danger"
-    //             let cardclass = `card w-75 ${color} mb-3`
-    //             let template =
-    //                 `
-    //             <div class="${cardclass}">
-    //                 <div class="card-body">
-    //                   <h5 class="card-title">${todo.name}</h5>
-    //                   <p class="card-text">${todo.description}</p>
-    //                   <p class="card-text">${new Date(todo.duedate).toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
-    //                   <p class="card-text">${status}</p>
-    //                 </div>
-    //                 <div class="card-footer">
-    //                     <button class="btn btn-light" data-toggle="modal" data-target="#ModalEdit" onclick='editForm(${objtodo})'>edit</button>
-    //                     |||
-    //                     <button class="btn btn-light" onclick="deleteTodo('${todo._id}')">delete</button>
-    //                 </div>
-    //             </div>
-    //             `
-    //             $("#todoProjectList").append(template)
-    //         }
-    //     })
-    //     .catch(err => {
-    //         console.log(err)
-    //     })
 }
 
 
@@ -257,35 +210,6 @@ function projectDetails(id) {
             console.log(err)
         })
 
-    // axios({
-    //     url: `${server_url}/projects/${id}`,
-    //     method: "GET",
-    //     headers: { token }
-    // })
-    //     .then(response => {
-    //         // console.log(response.data)
-    //         let theProject = response.data
-    //         let obj = { projectId: id }
-    //         $("#Projectmembers").empty()
-    //         for (let member of theProject.members) {
-    //             obj["memberId"] = member._id
-    //             let input = JSON.stringify(obj)
-    //             let template = `
-    //         <li class="mb-3">
-    //         <div class="row ">
-    //                 <button disabled class="btn btn-outline-dark ml-3 mr-2" style="color:black;font-weight:bold">${member.username}</button>
-    //                 <button class="btn btn-secondary btn-sm" onclick='removeMember(${input})'>remove</button>
-    //         </div>
-    //         </li>
-    //          `
-
-    //             $('#Projectmembers').prepend(template)
-    //         }
-    //     })
-    //     .catch(err => {
-    //         console.log(err)
-    //     })
-
 }
 
 function removeMember(obj) {
@@ -296,41 +220,58 @@ function removeMember(obj) {
 
     let token = localStorage.getItem("token")
 
-    event.preventDefault()
-    $.ajax({
-        url: `${server_url}/projects/${projectId}/removeMember`,
-        method: "POST",
-        data: {
-            memberId
-        },
-        headers: {
-            token
-        }
+    Swal.fire({
+        title: "Are you sure?",
+        text: "Once deleted, you will not be able to recover this imaginary file!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
     })
-        .done(data => {
-            projectDetails(projectId)
-            console.log(data)
+        .then(result => {
+            if (result.value) {
+                Swal.showLoading()
+                event.preventDefault()
+                $.ajax({
+                    url: `${server_url}/projects/${projectId}/removeMember`,
+                    method: "POST",
+                    data: {
+                        memberId
+                    },
+                    headers: {
+                        token
+                    }
+                })
+                    .done(data => {
+                        projectDetails(projectId)
+                        Swal.close()
+                        Swal.fire({
+                            type : "success",
+                            title : "You have successfully remove this member",
+                            showConfirmButton : false,
+                            timer : 1500
+                        })
+                        console.log(data)
+                    })
+                    .fail(err => {
+                        console.log(err)
+                        Swal.close()
+                        Swal.fire({
+                            type : "error",
+                            title : "You have failed remove this member",
+                            showConfirmButton : false,
+                            timer : 1500
+                        })
+                    })
+            }
+            else {
+
+            }
         })
-        .fail(err => {
-            console.log(err)
-        })
-    // axios({
-    //     url: `${server_url}/projects/${projectId}/removeMember`,
-    //     method: "POST",
-    //     data: {
-    //         memberId
-    //     },
-    //     headers: {
-    //         token
-    //     }
-    // })
-    //     .then(response => {
-    //         projectDetails(projectId)
-    //         console.log(response.data)
-    //     })
-    //     .catch(err => {
-    //         console.log(err)
-    //     })
+
+
+
 
 }
 
@@ -344,34 +285,17 @@ function getAllUsers() {
         method: "GET",
         headers: { token }
     })
-    .done(users=>{
+        .done(users => {
             let template = ''
             for (let user of users) {
                 template += `<option value="${user._id}">${user.username}</option>`
             }
             $("#userlist").prepend(template)
-    })
-    .fail(err=>{
-        console.log(err)
-    })
+        })
+        .fail(err => {
+            console.log(err)
+        })
 
-    // axios({
-    //     url: `${server_url}/users`,
-    //     method: "GET",
-    //     headers: { token }
-    // })
-    //     .then(response => {
-    //         // console.log(response.data)
-    //         const users = response.data
-    //         let template = ''
-    //         for (let user of users) {
-    //             template += `<option value="${user._id}">${user.username}</option>`
-    //         }
-    //         $("#userlist").prepend(template)
-    //     })
-    //     .catch(err => {
-    //         console.log(err)
-    //     })
 }
 
 
@@ -411,28 +335,11 @@ function addMemberForm(projectId) {
 
 function addMember(projectId) {
 
-    // console.log(projectId)
-
     let membersId = $("#userlist").val()
-    console.log(membersId)
-
     let token = localStorage.getItem("token")
 
     event.preventDefault()
-    // $.ajax({
-    //     url: `${server_url}/projects/${projectId}/addMember`,
-    //     method: "POST",
-    //     data: { membersId },
-    //     headers: { token }
-    // })
-    // .done(data=>{
-    //     // console.log(data)
-    //     projectDetails(projectId)
-    // })
-    // .fail(err=>{
-    //     console.log(err.status)
-    //     console.log(err.responseJSON.message)
-    // })
+    Swal.showLoading()
     axios({
         url: `${server_url}/projects/${projectId}/addMember`,
         method: "POST",
@@ -440,11 +347,24 @@ function addMember(projectId) {
         headers: { token }
     })
         .then(response => {
-            console.log(response.data)
+            // console.log(response.data)
+            Swal.close()
+            Swal.fire({
+                type: "success",
+                title: "You have successfully added member to this project",
+                showConfirmButton: false,
+                timer: 1500
+            })
             projectDetails(projectId)
         })
         .catch(err => {
             console.log(err)
+            Swal.fire({
+                type: 'error',
+                title: 'You have failed to to added member to this project',
+                showConfirmButton: false,
+                timer: 1500
+            })
         })
 
 }
@@ -504,6 +424,7 @@ function addTodo(projectId) {
     let description = $('#addTodoDescription').val()
     let duedate = $('#addTodoDuedate').val()
     let ProjectId = projectId
+    Swal.showLoading()
 
     $.ajax({
         url: `${server_url}/todos`,
@@ -511,25 +432,26 @@ function addTodo(projectId) {
         data: { name, description, duedate, ProjectId },
         headers: { token }
     })
-    .done(data=>{
-        console.log(data)
-        getProjectTodo(projectId)
-    })
-    .fail(err=>{
-        console.log(err)
-    })
+        .done(data => {
+            console.log(data)
+            Swal.close()
+            Swal.fire({
+                type: "success",
+                title: "You have successfully created new todo in project",
+                showConfirmButton: false,
+                timer: 1500
+            })
+            getProjectTodo(projectId)
+        })
+        .fail(err => {
+            console.log(err)
+            Swal.close()
+            Swal.fire({
+                type: "error",
+                title: "failed to create new todo in project",
+                showConfirmButton: false,
+                timer: 1500
+            })
+        })
 
-    // axios({
-    //     url: `${server_url}/todos`,
-    //     method: "POST",
-    //     data: { name, description, duedate, ProjectId },
-    //     headers: { token }
-    // })
-    //     .then(response => {
-    //         getProjectTodo(projectId)
-    //         console.log(response.data)
-    //     })
-    //     .catch(err => {
-    //         console.log(err)
-    //     })
 }

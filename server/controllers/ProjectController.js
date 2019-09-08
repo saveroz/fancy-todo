@@ -104,8 +104,8 @@ class ProjectController {
 
         let projectId = req.params.id
         let membersId = req.body.membersId
-        console.log("masuk ke add member")
-        console.log(req.body.membersId)
+        // console.log("masuk ke add member")
+        // console.log(req.body.membersId)
        
         Project.findById(projectId)
             .then(project => {
@@ -129,7 +129,7 @@ class ProjectController {
         let projectId = req.params.id
         let memberId = req.body.memberId
         // console.log(memberId)
-        console.log("masuk ke remove member")
+        // console.log("masuk ke remove member")
 
         Project.findById(projectId)
             .then(project => {

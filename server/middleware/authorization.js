@@ -4,7 +4,7 @@ const Project = require('../models/Project')
 
 function authorizationTodo(req,res,next){
     
-    console.log("masuk ke authorization")
+    // console.log("masuk ke authorization")
     let id = req.params.id
     let UserId = req.decode.id
 

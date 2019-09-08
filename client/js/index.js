@@ -54,6 +54,7 @@ function isLoggedIn(condition) {
         $('.signInForm').hide()
         $("#ProjectPage").hide()
         // getAllProjects()
+        afterLogin()
         getAlltodo()
         randomPoetry()
 
@@ -66,9 +67,10 @@ function isLoggedIn(condition) {
         $('#todo').hide()
         $('#todoButtonCreate').hide()
         $('#click_todo').hide()
-        $('.signUpForm').show()
+        $('.signUpForm').hide()
         $('#PoetryBox').hide()
         $("#ProjectPage").hide()
+        beforeLogin()
     }
 
 }
@@ -103,62 +105,35 @@ function login() {
 
     $.ajax({
         method: "POST",
-        url :  `${server_url}/users/login`,
-        data : {email, password}
+        url: `${server_url}/users/login`,
+        data: { email, password }
     })
         .done(data => {
-            console.log(data)
-            localStorage.setItem('token', data.token)
             // console.log(data)
-            // getAlltodo()
-            $('#todo').show()
-            $('#click_todo').show()
-            $('#signout').show()
-            $('.signInForm').hide()
-            $('#click_register').hide()
-            $('#click_login').hide()
-            $('.signUpForm').hide()
-            $('.signInForm').hide()
-            $('#signout').show()
-            $('#PoetryBox').show()
+            localStorage.setItem('token', data.token)
+            afterLogin()
             getAlltodo()
             randomPoetry()
-            swal("Success!", 'You have successfully login', "success");
+            
+            // swal("Success!", 'You have successfully login', "success");
+            Swal.fire({
+                type: "success",
+                title: "You have successfulyy login",
+                showConfirmButton: false,
+                timer: 1500
+            })
             $('#todoButtonCreate').show()
 
         })
         .fail(err => {
-            swal("Error!", err.message, "error");
+            Swal.fire({
+                type: "error",
+                title: err.responseJSON.message,
+                showConfirmButton: false,
+                timer: 1500
+            })
         })
-    // axios.post(`${server_url}/users/login`, {
-    //     email,
-    //     password
-    // })
-    //     .then(function ({ data }) {
-    //         // console.log(data)
-    //         localStorage.setItem('token', data.token)
-    //         // console.log(data)
-    //         // getAlltodo()
-    //         $('#todo').show()
-    //         $('#click_todo').show()
-    //         $('#signout').show()
-    //         $('.signInForm').hide()
-    //         $('#click_register').hide()
-    //         $('#click_login').hide()
-    //         $('.signUpForm').hide()
-    //         $('.signInForm').hide()
-    //         $('#signout').show()
-    //         $('#PoetryBox').show()
-    //         getAlltodo()
-    //         randomPoetry()
-    //         swal("Success!", 'You have successfully login', "success");
-    //         $('#todoButtonCreate').show()
 
-    //     })
-    //     .catch(err => {
-    //         // console.log(err.message)
-    //         swal("Error!", err.message, "error");
-    //     })
 }
 
 function signUp() {
@@ -178,30 +153,26 @@ function signUp() {
             $('.signUpForm').hide()
             $('.signInForm').show()
             // swal("Success!", data, "success");
+            Swal.fire({
+                type: 'success',
+                title: 'You Have successfully register!',
+                showConfirmButton: false,
+                timer: 1500
+            })
         })
         .fail((err) => {
-      
+
             console.log(err.status)
             console.log(err.responseJSON.message)
- 
+            // swal("Error!", err.message, "error");
+            Swal.fire({
+                type: "error",
+                title: err.responseJSON.message,
+                showConfirmButton: false,
+                timer: 1500
+            })
         })
 
-    // axios.post(`${server_url}/users/register`, {
-    //     username,
-    //     email,
-    //     password
-    // })
-    //     .then(function ({ data }) {
-
-    //         $('.signUpForm').hide()
-    //         $('.signInForm').show()
-    //         swal("Success!", data, "success");
-
-    //     })
-    //     .catch(err => {
-    //         // console.log(err.message)
-    //         swal("Error!", err.message, "error");
-    //     })
 }
 
 function onSignIn(googleUser) {
@@ -217,7 +188,7 @@ function onSignIn(googleUser) {
         }
     })
         .done(data => {
-            // console.log(response.data)
+            // console.log(data)
             localStorage.setItem('token', data.token)
             $('.signUpForm').hide()
             $('.signInForm').hide()
@@ -231,38 +202,49 @@ function onSignIn(googleUser) {
             $('#todoButtonCreate').show()
             randomPoetry()
         })
-        .fail(err=>{
+        .fail(err => {
             console.log(err)
         })
-    // axios({
-    //     method: "POST",
-    //     url: `${server_url}/users/signIn`,
-    //     data: {
-    //         idToken
-    //     }
-    // })
-    //     .then(response => {
-    //         console.log(response.data)
-    //         localStorage.setItem('token', response.data)
-    //         $('.signUpForm').hide()
-    //         $('.signInForm').hide()
-    //         $('#signout').show()
-    //         $('#PoetryBox').show()
-    //         $('#PoetryThirdApi').empty()
-    //         $('#click_register').hide()
-    //         $('#click_login').hide()
-    //         getAlltodo()
-    //         swal("Success!", 'You have successfully login', "success");
-    //         $('#todoButtonCreate').show()
-    //         randomPoetry()
-    //     })
-    //     .catch(err => {
-    //         console.log("error")
-    //     })
+
 }
+
 
 function signOut() {
     var auth2 = gapi.auth2.getAuthInstance();
+
+    Swal.fire({
+        title: "Are you sure you want to sign out ?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+    })
+    .then(result=>{
+        if(result.value){
+            localStorage.removeItem('token')
+            beforeLogin()
+            auth2.signOut()
+                .then(function () {
+                    Swal.fire({
+                        type: 'success',
+                        title: 'You Have successfully logout!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    console.log('User signed out.');
+                })
+                .catch(err => {
+                    console.log(err)
+                });
+        }
+    })
+  
+}
+
+function beforeLogin() {
+    $("#MyProjectsNavItem").hide()
+    $("#MyTodosNavItem").hide()
     $('#alltask').empty()
     $("#projectList").empty()
     $("#todoProjectList").empty()
@@ -276,25 +258,23 @@ function signOut() {
     $('#PoetryThirdApi').empty()
     $('#PoetryBox').hide()
     $("#ProjectPage").hide()
-    localStorage.removeItem('token')
     $('.signInForm').show()
-    auth2.signOut()
-        .then(function () {
-
-            console.log('User signed out.');
-        })
-        .catch(err => {
-            console.log(err)
-        });
-}
-
-function beforeLogin() {
-
 
 }
 
 function afterLogin() {
-
+    $("#MyProjectsNavItem").show()
+    $("#MyTodosNavItem").show()
+    $('#todo').show()
+    $('#click_todo').show()
+    $('#signout').show()
+    $('.signInForm').hide()
+    $('#click_register').hide()
+    $('#click_login').hide()
+    $('.signUpForm').hide()
+    $('.signInForm').hide()
+    $('#signout').show()
+    $('#PoetryBox').show()
 }
 
 

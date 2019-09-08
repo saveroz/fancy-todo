@@ -8,7 +8,7 @@ function createTodo() {
     let duedate = $('#inputDueDateCreate').val()
 
     let token = localStorage.getItem("token")
-
+    Swal.showLoading()
     event.preventDefault();
     $.ajax({
         url : `${server_url}/todos`,
@@ -17,7 +17,8 @@ function createTodo() {
         headers : {token}
     })
     .done(data=>{
-        swal("Success!", 'You have successfully created Task', "success");
+        Swal.close()
+        Swal.fire("Success!", 'You have successfully created Task', "success");
         getAlltodo()
             // $('.createTodo').hide()
             // $('#student-list').prepend('<li>' + newStudent.name + '</li>');
@@ -27,33 +28,15 @@ function createTodo() {
         $('#ModalCreate').modal('hide')
     })
     .fail(err=>{
-        let errMessage = (err.responseJSON.message)
-        swal("Error!", errMessage, "error")
-
+        // let errMessage = (err.responseJSON.message)
+        Swal.close()
+        Swal.fire({
+            type: 'error',
+            title: 'You have failed to created task',
+            showConfirmButton: false,
+            timer: 1500
+        })
     })
-
-    // axios({
-    //     url : `${server_url}/todos`,
-    //     method : "POST",
-    //     data : { name, description, duedate},
-    //     headers : {token}
-    // })
-    // .then(({data})=>{
-    //         swal("Success!", 'You have successfully created Task', "success");
-    //         getAlltodo()
-    //         // $('.createTodo').hide()
-    //         // $('#student-list').prepend('<li>' + newStudent.name + '</li>');
-    //         $('#inputDescriptionCreate').val(null)
-    //         $('#inputTitleCreate').val(null)
-    //         $('#inputDueDateCreate').val(null)
-    //         $('#ModalCreate').modal('hide')
-
-    // })
-    // .catch(err=>{
-    //     // console.log(err)
-    //     let errMessage = (err.response.data.message)
-    //     swal("Error!", errMessage, "error")
-    // })
 }
 
 
@@ -65,15 +48,18 @@ function deleteTodo(todoId) {
 
     // let id = '5d50365ef9e4091ff0edff18'
     let id = todoId
-    swal({
+    Swal.fire({
         title: "Are you sure?",
         text: "Once deleted, you will not be able to recover this imaginary file!",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
     })
-        .then((willDelete) => {
-            if (willDelete) {
+        .then((result) => {
+            if (result.value) {
+                Swal.showLoading()
                 event.preventDefault();
                 $.ajax({
                     url: `${server_url}/todos/${id}`,
@@ -86,51 +72,38 @@ function deleteTodo(todoId) {
                         getProjectTodo(deletedTodo.ProjectId)
                     }
                     getAlltodo()
-                    swal("Success!", 'You have successfully  delete Task', "success");
+                    Swal.close()
+                    Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                    )
                 })
                 .fail(err=>{
-                    console.log(err)
+                    Swal.close()
+                    Swal.fire({
+                        type: 'error',
+                        title: 'You have failed to deleted task',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    // console.log(err)
                 })
             }
             else{
-                swal("Your imaginary file is safe!")
+                
             }
         })
-
-        //         axios({
-        //             url: `${server_url}/todos/${id}`,
-        //             method: "DELETE",
-        //             headers: { token }
-        //         })
-        //             .then(response => {
-        //                 let deletedTodo = response.data
-        //                 if (deletedTodo.ProjectId) {
-        //                     getProjectTodo(deletedTodo.ProjectId)
-
-        //                 }
-        //                 getAlltodo()
-        //                 swal("Success!", 'You have successfully  delete Task', "success");
-
-        //             })
-        //             .catch(err => {
-        //                 console.log(err)
-        //             })
-        //     }
-        //     else {
-        //         swal("Your imaginary file is safe!");
-        //     }
-        // })
 }
 
 function getAlltodo() {
 
     let token = localStorage.getItem("token")
-    // console.log('masuke ke get all')
-    // $('#homepage_text').hide()
+    
     $('#todo').show()
     $('#alltask').show()
-    $('.signUpForm').hide()
-    $('.signInForm').hide()
+    // $('.signUpForm').hide()
+    // $('.signInForm').hide()
 
     $.ajax({
         url: `${server_url}/todos`,
@@ -173,7 +146,7 @@ function getAlltodo() {
         })
         .fail(err => {
             console.log(err.status)
-            console.log(err.responseJSON.message)
+            // console.log(err.responseJSON.message)
         })
 }
 
@@ -230,6 +203,7 @@ function editTodo(todoId) {
     // console.log(status)
     status = status === "true" ? status = true : status = false
     // console.log(status)
+    Swal.showLoading()
     event.preventDefault()
     $.ajax({
         url: `${server_url}/todos/${id}`,
@@ -245,32 +219,25 @@ function editTodo(todoId) {
             getAlltodo()
         }
         
-        swal("Success!", 'You have successfully edited Task', "success");
+        // swal("Success!", 'You have successfully edited Task', "success");
+        Swal.close()
+        Swal.fire({
+            type : 'success',
+            title : "you have successfully edited task",
+            showConfirmButton: false,
+            timer: 1500
+        })
     })
     .fail(err=>{
-        console.log(err)
+        // console.log(err)
+        Swal.close()
+        Swal.fire({
+            type: 'error',
+            title: 'You have failed to edit task',
+            showConfirmButton: false,
+            timer: 1500
+        })
     })
-
-    // axios({
-    //     url: `${server_url}/todos/${id}`,
-    //     method: "PATCH",
-    //     data: { name, description, duedate, status },
-    //     headers: { token }
-    // })
-    //     .then(response => {
-    //         // console.log(response.data)
-    //         let todo = response.data
-
-    //         if (todo.ProjectId) {
-    //             getProjectTodo(todo.ProjectId)
-    //         }
-
-    //         swal("Success!", 'You have successfully edited Task', "success");
-    //         getAlltodo()
-    //     })
-    //     .catch(err => {
-    //         console.log(err)
-    //     })
 
 }
 
@@ -315,44 +282,6 @@ function getProjectTodo(id) {
         console.log(err)
     })
 
-    // axios({
-    //     url: `${server_url}/todos/projects/${id}`,
-    //     method: "GET",
-    //     headers: { token }
-    // })
-    //     .then(response => {
-    //         $("#todoProjectList").empty()
-    //         // console.log(response.data)
-    //         let todosProjects = response.data
-
-    //         for (let todo of todosProjects) {
-    //             let objtodo = JSON.stringify(todo)
-    //             let status = ""
-    //             status = todo.status === true ? status = "completed" : status = "uncompleted"
-    //             let color = todo.status === true ? "text-white bg-primary" : "text-white bg-danger"
-    //             let cardclass = `card w-75 ${color} mb-3`
-    //             let template =
-    //                 `
-    //             <div class="${cardclass}">
-    //                 <div class="card-body">
-    //                   <h5 class="card-title">${todo.name}</h5>
-    //                   <p class="card-text">${todo.description}</p>
-    //                   <p class="card-text">${new Date(todo.duedate).toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
-    //                   <p class="card-text">${status}</p>
-    //                 </div>
-    //                 <div class="card-footer">
-    //                     <button class="btn btn-light" data-toggle="modal" data-target="#ModalEdit" onclick='editForm(${objtodo})'>edit</button>
-    //                     |||
-    //                     <button class="btn btn-light" onclick="deleteTodo('${todo._id}')">delete</button>
-    //                 </div>
-    //             </div>
-    //             `
-    //             $("#todoProjectList").append(template)
-    //         }
-    //     })
-    //     .catch(err => {
-    //         console.log(err)
-    //     })
 }
 
 

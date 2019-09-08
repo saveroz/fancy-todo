@@ -33,7 +33,7 @@ class UserController{
         })
         .then( function (ticket){
 
-            console.log(ticket.getPayload())
+            // console.log(ticket.getPayload())
             const {email, name} = ticket.getPayload()
   
             
@@ -57,7 +57,8 @@ class UserController{
                 'email' : user.email
             }
             let token = jwt.sign(userdata,Secret)
-            res.json({token})       
+            // console.log(token)
+            res.status(200).json({token})       
         })
         .catch(next)
         
@@ -91,7 +92,7 @@ class UserController{
             else{
                 // res.status(200).json("you have failed to login")
                 // throw new Error ('email/password not found')
-                next({status:404, message : "email/password not is wrong"})
+                next({status:404, message : "email/password is wrong"})
             }
             
         })

@@ -1,3 +1,7 @@
+a:hover {
+    cursor:pointer;
+}
+   
 .signUpForm  {
     width: 30%;
     margin-top: 2%;
