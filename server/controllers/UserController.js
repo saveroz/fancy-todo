@@ -35,10 +35,7 @@ class UserController{
 
             console.log(ticket.getPayload())
             const {email, name} = ticket.getPayload()
-            // {
-            //     email = admidadmas,
-            //     name = a
-            // }
+  
             
         User.findOne( {email})
         .then(user =>{

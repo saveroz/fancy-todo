@@ -36,7 +36,10 @@ function authorizationTodo(req,res,next){
             }
             else{
 
-                if(theTodo.UserId==UserId){
+                if (!theTodo){
+                    next({status:404, message: "todo not found"})
+                }
+                else if(theTodo.UserId==UserId){
                     next()
                 }
                 else{
